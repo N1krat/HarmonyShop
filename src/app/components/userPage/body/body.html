@@ -1,0 +1,62 @@
+<div class="container mt-5">
+
+  <h2 class="mb-3">Welcome to your profile</h2>
+
+  <div class="card p-3 mb-4 shadow-sm">
+    <h5>Email:</h5>
+    <p class="m-0">{{ email }}</p>
+  </div>
+
+  <h3 class="mb-3">Your Orders</h3>
+
+  <div *ngIf="orders.length === 0" class="alert alert-info">
+    You have no orders yet.
+  </div>
+
+  <div class="container mt-5">
+  <h2 class="mb-4 text-center">Your Orders</h2>
+
+  <div *ngIf="orders.length === 0" class="text-center py-5">
+    <p class="fs-5">You have no orders yet.</p>
+    <a routerLink="/products" class="btn btn-primary btn-lg">Go to Shop</a>
+  </div>
+
+ <div *ngFor="let order of orders" class="card mb-4 shadow-sm">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5 class="card-title mb-0">Order #{{ order.id }}</h5>
+      <span class="badge"
+            [ngClass]="{
+              'bg-success': order.status === 2,
+              'bg-warning text-dark': order.status === 1,
+              'bg-danger': order.status === 0
+            }">
+        {{ order.status === 2 ? 'Completed' : order.status === 1 ? 'Pending' : 'Canceled' }}
+      </span>
+    </div>
+
+    <p class="mb-2"><strong>Total:</strong> {{ order.total }} MDL</p>
+
+    <div *ngIf="order.products.length">
+      <h6>Items:</h6>
+      <ul class="list-group list-group-flush">
+        <li *ngFor="let item of order.products" class="list-group-item d-flex align-items-center">
+          <img *ngIf="item.images.length"
+               [src]="'http://localhost:3000' + item.images[0]"
+               class="me-3 rounded"
+               width="60" alt="{{ item.name }}">
+          <div>
+            <strong>{{ item.name }}</strong><br>
+            {{ item.quantity }} x {{ item.price }} MDL
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+</div>
