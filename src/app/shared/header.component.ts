@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../components/core/services/auth.service'; // adjust path if needed
 
 @Component({
   selector: 'app-shared-header',
@@ -9,12 +10,36 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./header.component.css'],
   imports: [RouterLink, CommonModule]
 })
-export class SharedHeaderComponent {
-  constructor(private router: Router) {}
-  goLogin() {
-    this.router.navigate(['/login']);
+export class SharedHeaderComponent implements OnInit {
+  isLogged = false;
+  userEmail: string | null = null;
+
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit() {
+    this.authService.isLoggedIn$.subscribe((status) => {
+      this.isLogged = status;
+    });
+
+    this.authService.userEmail$.subscribe((email) => {
+      this.userEmail = email;
+    });
   }
+
+  goLogin() {
+    if (this.isLogged) {
+      // user already logged in
+      this.router.navigate(['/user']);
+    } else {
+      // user not logged in
+      this.router.navigate(['/login']);
+    }
+  }
+
   logout() {
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }

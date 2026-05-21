@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from '../header/header.component';
 import { BodyComponent } from '../body/body.component';
+import { SharedHeaderComponent } from '../../../shared/header.component';
 
 @Component({
-  selector: 'app-register-connector',
+  selector: 'app-userPage-connector',
   template: `
-    <app-header></app-header>
+    <app-shared-header></app-shared-header>
     <app-body></app-body>
   `,
   standalone: true,  
   imports: [
-    HeaderComponent,
+    SharedHeaderComponent,
     BodyComponent,
   ]
 })

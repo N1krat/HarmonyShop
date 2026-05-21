@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 import { RouterLink } from '@angular/router';
-
 @Component({
   selector: 'app-body',
   standalone: true,
@@ -16,27 +16,29 @@ export class BodyComponent {
   password = '';
   error = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   submitLogin() {
-    const credentials = {
+    console.log('🔥 BUTTON CLICKED');
+
+    this.authService.login({
       email: this.email,
       password: this.password
-    };
+    }).subscribe({
+      next: (res) => {
+        console.log('LOGIN SUCCESS:', res);
 
-    // AuthService removed: stub login
-    if (credentials.email === 'admin' && credentials.password === 'admin') {
-      setTimeout(() => {
-        this.router.navigate(['/admin']);
-      }, 0);
-      return;
-    }
-    if (credentials.email && credentials.password) {
-      setTimeout(() => {
-        this.router.navigate(['/home']);
-      }, 0);
-    } else {
-      this.error = 'Email sau parolă greșită!';
-    }
+        if (res?.token) {
+          this.router.navigate(['/home']); 
+        }
+      },
+      error: (err) => {
+        console.log('LOGIN ERROR:', err);
+        this.error = err?.error?.error || 'Invalid credentials';
+      }
+    });
   }
 }

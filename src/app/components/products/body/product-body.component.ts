@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-// AdminService, Product model and CartService temporarily removed
+import { ProductService } from '../../core/services/product.service'; // adjust path
 
 @Component({
   selector: 'app-body',
@@ -11,23 +11,38 @@ import { Router } from '@angular/router';
   styleUrls: ['./body.css']
 })
 export class BodyComponent implements OnInit {
+
   products: any[] = [];
-  
+  loading = true;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private productService: ProductService
   ) {}
 
   ngOnInit(): void {
-    // product loading disabled until AdminService is restored
+    this.loadProducts();
+  }
+
+  loadProducts() {
+    this.productService.getProducts().subscribe({
+      next: (data) => {
+        this.products = data;
+        this.loading = false;
+
+        console.log('Products loaded:', data);
+      },
+
+      error: (err) => {
+        console.error('Error loading products:', err);
+        this.loading = false;
+      }
+    });
   }
 
   addToCart(product: any) {
-  // cart functionality temporarily disabled until CartService is restored
-  alert(`${product?.name || 'Product'} added to cart (stub)`);
-} 
-
-
+    alert(`${product?.name || 'Product'} added to cart`);
+  }
 
   openProduct(id: number) {
     this.router.navigate(['/product', id]);
