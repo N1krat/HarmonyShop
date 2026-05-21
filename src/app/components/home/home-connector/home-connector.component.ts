@@ -1,20 +1,20 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from '../header/home-header.component';
+import { SharedHeaderComponent } from '../../../shared/header.component';
+import { SharedFooterComponent } from '../../../shared/footer.component';
 import { BodyComponent } from '../body/home-body.component';
-import { FooterComponent } from '../footer/home-footer.component';
 
 @Component({
   selector: 'app-home-connector',
   template: `
-    <app-header></app-header>
+    <app-shared-header></app-shared-header>
     <app-body></app-body>
-    <app-footer></app-footer>
+    <app-shared-footer></app-shared-footer>
   `,
   standalone: true,  
   imports: [
-    HeaderComponent,
+    SharedHeaderComponent,
     BodyComponent,
-    FooterComponent
+    SharedFooterComponent
   ]
 })
 export class HomeConnectorComponent { }

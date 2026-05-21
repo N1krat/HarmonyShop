@@ -1,5 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-describe('Admin users placeholder', () => {
-  it('placeholder test', () => expect(true).toBeTrue());
+import { AdminUsers } from './admin-users.component';
+
+describe('Users', () => {
+  let component: AdminUsers;
+  let fixture: ComponentFixture<AdminUsers>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AdminUsers]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(AdminUsers);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

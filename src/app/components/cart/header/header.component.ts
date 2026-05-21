@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-// AuthService temporarily removed
 
 @Component({
   selector: 'app-header',
@@ -16,7 +15,8 @@ export class HeaderComponent {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    // auth integration disabled until AuthService is restored
+    // AuthService removed: set isLogged to false or implement logic if needed
+    this.isLogged = false;
   }
 
   goLogin() {
@@ -24,6 +24,8 @@ export class HeaderComponent {
   }
 
   logout() {
-    this.router.navigate(['/home']);
+    // AuthService removed: implement logout logic if needed
+    this.isLogged = false;
+    this.router.navigate(['/login']);
   }
 }

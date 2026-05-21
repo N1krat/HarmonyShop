@@ -1,0 +1,25 @@
+<div class="container mt-5" *ngIf="product">
+  <div class="row justify-content-center">
+    <div class="col-md-4 mb-4">
+      <div class="card product-card h-100">
+        <img [src]="getImageUrl(product.images?.[0])" class="card-img-top" alt="{{product.name}}">
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <h4 class="card-text text-primary fw-bold mb-3 mt-3">${{ product.price }}</h4>
+          <p class="card-text">{{ product.description }}</p>
+          <p class="card-text"><strong>Stock:</strong> {{ product.stock }}</p>
+          <button class="btn btn-primary mt-auto" (click)="addToCart(product)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!product" class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+      <h3>Product not found.</h3>
+    </div>
+  </div>
+</div>
