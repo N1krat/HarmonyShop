@@ -22,6 +22,12 @@
           Cart
         </a>
 
+        <ng-container *ngIf="isAdmin">
+          <a class="nav-link" routerLink="/admin">
+            Admin Panel
+          </a>
+        </ng-container>
+
         <a class="nav-link" (click)="logout()">
           Logout
         </a>

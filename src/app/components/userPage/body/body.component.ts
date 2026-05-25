@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-// AdminService and AuthService temporarily removed
 import { CommonModule } from '@angular/common';
+import { AdminService } from '../../core/services/admin.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-body',
@@ -14,11 +15,35 @@ export class BodyComponent implements OnInit {
   userId: number | null = null;
   orders: any[] = [];
 
-  constructor() {}
+  constructor(
+    private adminService: AdminService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    // user lookup disabled until services are restored
+    this.getUserId();
+    this.loadOrders();
   }
 
-  // getUserId and loadOrders disabled until AdminService is restored
+  getUserId() {
+    this.userId = this.authService.getUserId();
+    this.email = localStorage.getItem('email');
+  }
+
+  loadOrders() {
+    if (!this.userId) {
+      console.warn('User ID not found');
+      return;
+    }
+
+    this.adminService.getOrdersForUser(this.userId).subscribe({
+      next: (data) => {
+        this.orders = data;
+        console.log('Orders loaded:', data);
+      },
+      error: (err) => {
+        console.error('Error loading orders:', err);
+      }
+    });
+  }
 }

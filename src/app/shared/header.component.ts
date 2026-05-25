@@ -12,6 +12,7 @@ import { AuthService } from '../components/core/services/auth.service'; // adjus
 })
 export class SharedHeaderComponent implements OnInit {
   isLogged = false;
+  isAdmin = false;
   userEmail: string | null = null;
 
   constructor(
@@ -22,6 +23,7 @@ export class SharedHeaderComponent implements OnInit {
   ngOnInit() {
     this.authService.isLoggedIn$.subscribe((status) => {
       this.isLogged = status;
+      this.isAdmin = this.authService.isAdmin();
     });
 
     this.authService.userEmail$.subscribe((email) => {
@@ -32,7 +34,7 @@ export class SharedHeaderComponent implements OnInit {
   goLogin() {
     if (this.isLogged) {
       // user already logged in
-      this.router.navigate(['/user']);
+      this.router.navigate(['/profile']);
     } else {
       // user not logged in
       this.router.navigate(['/login']);

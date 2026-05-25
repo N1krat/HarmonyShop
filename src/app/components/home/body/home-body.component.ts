@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// AdminService and Product model removed temporarily (will add back later)
+import { AdminService } from '../../core/services/admin.service';
 
 @Component({
   selector: 'app-body',
@@ -20,10 +20,22 @@ export class BodyComponent implements OnInit {
     '/uploads/promo/promo6.webp'
   ];
 
-  constructor() {}
+  constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
-    // products loading disabled until AdminService is restored
+    this.loadProducts();
+  }
+
+  loadProducts() {
+    this.adminService.getProducts().subscribe({
+      next: (data) => {
+        this.products = data;
+        console.log('Products loaded:', data);
+      },
+      error: (err) => {
+        console.error('Error loading products:', err);
+      }
+    });
   }
 
 }

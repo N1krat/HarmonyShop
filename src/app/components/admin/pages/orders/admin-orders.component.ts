@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AdminService } from '../../../core/services/admin.service';
+
 @Component({
   selector: 'app-orders',
   standalone: true,
@@ -11,19 +13,32 @@ import { FormsModule } from '@angular/forms';
 export class AdminOrders implements OnInit {
   orders: any[] = [];
 
-  constructor() {}
+  constructor(private adminService: AdminService) {}
 
   ngOnInit() {
-    // this.loadOrders();
+    this.loadOrders();
   }
 
-  // loadOrders() {
-  //   // AdminService removed: stub orders
-  //   this.orders = [];
-  // }
+  loadOrders() {
+    this.adminService.getAllOrders().subscribe({
+      next: (data) => {
+        this.orders = data;
+        console.log('Orders loaded:', data);
+      },
+      error: (err) => {
+        console.error('Error loading orders:', err);
+      }
+    });
+  }
 
-  // AdminService removed: stub update
   updateStatus(order: any) {
-    console.log(`Order #${order.id} status updated to ${order.status}`);
+    this.adminService.updateOrderStatus(order.id, order.status).subscribe({
+      next: (data) => {
+        console.log(`Order #${order.id} status updated to ${order.status}`);
+      },
+      error: (err) => {
+        console.error('Error updating order status:', err);
+      }
+    });
   }
 }

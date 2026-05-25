@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AdminService } from '../../../core/services/admin.service';
 
 @Component({
   selector: 'app-users',
@@ -11,15 +12,22 @@ import { CommonModule } from '@angular/common';
 export class AdminUsers implements OnInit {
   users: any[] = [];
 
-  constructor() {}
+  constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
-  // this.loadUsers();
+    this.loadUsers();
   }
 
-  // loadUsers() {
-  //   // AdminService removed: stub users
-  //   this.users = [];
-  // }
+  loadUsers() {
+    this.adminService.getUsers().subscribe({
+      next: (data) => {
+        this.users = data;
+        console.log('Users loaded:', data);
+      },
+      error: (err) => {
+        console.error('Error loading users:', err);
+      }
+    });
+  }
 
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../core/models/product.model';
 import { CommonModule } from '@angular/common';
+import { AdminService } from '../../core/services/admin.service';
 
 @Component({
   selector: 'app-body',
@@ -13,22 +14,28 @@ import { CommonModule } from '@angular/common';
 export class BodyComponent implements OnInit {
   product?: Product;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private adminService: AdminService
+  ) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) return;
 
-    // AdminService removed: stub product loading
-    this.product = {
-      id,
-      name: 'Sample Product',
-      description: 'Description',
-      price: 0,
-      stock: 0,
-      image: null,
-      images: []
-    };
+    this.loadProduct(id);
+  }
+
+  loadProduct(id: number) {
+    this.adminService.getProductById(id).subscribe({
+      next: (data) => {
+        this.product = data;
+        console.log('Product loaded:', data);
+      },
+      error: (err) => {
+        console.error('Error loading product:', err);
+      }
+    });
   }
 
   // Helper to get full URL for backend images
