@@ -1,23 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product.service'; // adjust path
 import { CartService } from '../../core/services/cart.service';
 
 @Component({
   selector: 'app-body',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './body.html',
   styleUrls: ['./body.css']
 })
 export class BodyComponent implements OnInit {
 
   products: any[] = [];
+  filteredProducts: any[] = [];
   loading = true;
+  categories: string[] = [];
+  
+  // Filter options
+  selectedCategory = '';
+  minPrice = 0;
+  maxPrice = 10000;
+  searchQuery = '';
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private productService: ProductService,
     private cartService: CartService
   ) {
@@ -26,14 +36,41 @@ export class BodyComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('🛍️ ProductBodyComponent ngOnInit called');
-    this.loadProducts();
+    
+    // Load categories
+    this.loadCategories();
+    
+    // Check for search query in URL
+    this.route.queryParams.subscribe(params => {
+      if (params['search']) {
+        this.searchQuery = params['search'];
+        this.performSearch();
+      } else {
+        this.loadProducts();
+      }
+    });
+  }
+
+  loadCategories() {
+    console.log('📂 Loading categories...');
+    this.productService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data;
+        console.log('✅ 📂 Categories loaded:', data);
+      },
+      error: (err) => {
+        console.error('❌ 📂 Error loading categories:', err);
+      }
+    });
   }
 
   loadProducts() {
     console.log('🛍️ Loading products...');
+    this.loading = true;
     this.productService.getProducts().subscribe({
       next: (data) => {
         this.products = data;
+        this.filteredProducts = data;
         this.loading = false;
 
         console.log('✅ 🛍️ Products loaded:', data);
@@ -44,6 +81,58 @@ export class BodyComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  performSearch() {
+    if (!this.searchQuery.trim()) {
+      this.loadProducts();
+      return;
+    }
+
+    console.log('🔍 Searching products for:', this.searchQuery);
+    this.loading = true;
+    this.productService.searchProducts(this.searchQuery).subscribe({
+      next: (data) => {
+        this.products = data;
+        this.filteredProducts = data;
+        this.loading = false;
+        console.log('✅ 🔍 Search results:', data);
+      },
+      error: (err) => {
+        console.error('❌ 🔍 Search error:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  applyFilters() {
+    console.log('🔍 Applying filters - category:', this.selectedCategory, 'price:', this.minPrice, '-', this.maxPrice);
+    this.loading = true;
+
+    this.productService.filterProducts(
+      this.selectedCategory || undefined,
+      this.minPrice,
+      this.maxPrice
+    ).subscribe({
+      next: (data) => {
+        this.filteredProducts = data;
+        this.loading = false;
+        console.log('✅ 🔍 Filtered results:', data);
+      },
+      error: (err) => {
+        console.error('❌ 🔍 Filter error:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  resetFilters() {
+    console.log('🔄 Resetting filters');
+    this.selectedCategory = '';
+    this.minPrice = 0;
+    this.maxPrice = 10000;
+    this.searchQuery = '';
+    this.loadProducts();
   }
 
   addToCart(product: any) {

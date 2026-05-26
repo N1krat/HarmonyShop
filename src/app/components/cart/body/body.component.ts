@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
+import { OrderService } from '../../core/services/order.service';
+import { AuthService } from '../../core/services/auth.service';
 
 
 @Component({
@@ -16,10 +18,13 @@ export class BodyComponent implements OnInit {
   cartItems: any[] = [];
   totalPrice = 0;
   products: any[] = [];
+  isCheckingOut = false;
 
   constructor(
     private router: Router,
-    private cartService: CartService
+    private cartService: CartService,
+    private orderService: OrderService,
+    private authService: AuthService
   ) {
     console.log('🛒 CartBodyComponent constructor called');
   }
@@ -37,7 +42,7 @@ export class BodyComponent implements OnInit {
   calculateTotal() {
     this.totalPrice = this.cartItems.reduce((total, item) => {
       const itemTotal = item.price * item.quantity;
-      console.log(`🛒 Item ${item.id}: $${item.price} x ${item.quantity} = $${itemTotal}`);
+      console.log(`🛒 Item ${item.id}: MDL ${item.price} x ${item.quantity} = MDL ${itemTotal}`);
       return total + itemTotal;
     }, 0);
     console.log('🛒 Final total:', this.totalPrice);
@@ -67,12 +72,38 @@ export class BodyComponent implements OnInit {
       alert('Cart is empty');
       return;
     }
-    console.log('🛒 Checking out with items:', this.cartItems);
-    // Implement checkout logic here
-    alert('Checkout functionality coming soon!');
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      console.warn('🛒 User not logged in');
+      alert('Please log in to checkout');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.isCheckingOut = true;
+    console.log('🛒 Proceeding with checkout for user:', userId);
+
+    const orderProducts = this.cartItems.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity
+    }));
+
+    this.orderService.createOrder(parseInt(userId), this.totalPrice, orderProducts).subscribe({
+      next: (response: any) => {
+        console.log('✅ 🛒 Order created successfully:', response);
+        alert(`Order placed successfully! Order ID: ${response.orderId}`);
+        this.cartService.clearCart();
+        this.isCheckingOut = false;
+        this.router.navigate(['/profile']);
+      },
+      error: (err) => {
+        console.error('❌ 🛒 Error creating order:', err);
+        alert('Error placing order: ' + (err.error?.error || err.message));
+        this.isCheckingOut = false;
+      }
+    });
   }
-
-
-
-
 }

@@ -59,10 +59,27 @@ async function initializeDatabase() {
         description TEXT,
         price REAL NOT NULL,
         stock INTEGER NOT NULL, 
-        images TEXT
+        images TEXT,
+        category TEXT DEFAULT 'Electronics',
+        rating REAL DEFAULT 0
       )
     `).run();
     console.log("✅ Products table ready");
+
+    // Add category and rating columns if they don't exist (for existing databases)
+    try {
+      db.prepare("ALTER TABLE products ADD COLUMN category TEXT DEFAULT 'Electronics'").run();
+      console.log("✅ Added category column");
+    } catch (err) {
+      // Column might already exist, ignore
+    }
+
+    try {
+      db.prepare("ALTER TABLE products ADD COLUMN rating REAL DEFAULT 0").run();
+      console.log("✅ Added rating column");
+    } catch (err) {
+      // Column might already exist, ignore
+    }
 
     db.prepare(`
       CREATE TABLE IF NOT EXISTS orders (
@@ -91,17 +108,20 @@ async function initializeDatabase() {
       db.prepare("INSERT INTO users (email, password) VALUES (?, ?)").run("user@example.com", userPass);
       console.log("✅ Test user created: user@example.com / user123");
 
-      // Add sample products
+      // Add sample products with categories and ratings
       const products = [
-        { name: "Laptop", description: "High-performance laptop", price: 999.99, stock: 5 },
-        { name: "Mouse", description: "Wireless mouse", price: 29.99, stock: 20 },
-        { name: "Keyboard", description: "Mechanical keyboard", price: 79.99, stock: 15 }
+        { name: "Laptop", description: "High-performance laptop for professionals", price: 999.99, stock: 5, category: "Electronics", rating: 4.5 },
+        { name: "Mouse", description: "Wireless mouse with precision tracking", price: 29.99, stock: 20, category: "Electronics", rating: 4.2 },
+        { name: "Keyboard", description: "Mechanical keyboard with RGB lighting", price: 79.99, stock: 15, category: "Electronics", rating: 4.8 },
+        { name: "Monitor", description: "27-inch 4K monitor", price: 349.99, stock: 8, category: "Electronics", rating: 4.6 },
+        { name: "Desk Lamp", description: "LED desk lamp with adjustable brightness", price: 49.99, stock: 12, category: "Accessories", rating: 4.3 },
+        { name: "USB Cable", description: "High-speed USB 3.0 cable", price: 9.99, stock: 50, category: "Accessories", rating: 4.1 }
       ];
 
       products.forEach(p => {
         db.prepare(
-          "INSERT INTO products (name, description, price, stock, images) VALUES (?, ?, ?, ?, ?)"
-        ).run(p.name, p.description, p.price, p.stock, JSON.stringify([]));
+          "INSERT INTO products (name, description, price, stock, images, category, rating) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        ).run(p.name, p.description, p.price, p.stock, JSON.stringify([]), p.category, p.rating);
       });
       console.log("✅ Sample products created");
     } else {
@@ -219,6 +239,84 @@ app.get("/api/products", (req, res) => {
   }
 });
 
+// Search products - MUST come before :id route
+app.get("/api/products/search", (req, res) => {
+  const { q } = req.query;
+  console.log("🔍 Searching products with query:", q);
+  try {
+    if (!q) {
+      return res.json([]);
+    }
+
+    const products = db.prepare(
+      "SELECT * FROM products WHERE name LIKE ? OR description LIKE ? OR category LIKE ?"
+    ).all(`%${q}%`, `%${q}%`, `%${q}%`);
+
+    console.log("✅ Found", products.length, "products matching:", q);
+    products.forEach(p => {
+      p.images = p.images ? JSON.parse(p.images) : [];
+    });
+    res.json(products);
+  } catch (err) {
+    console.error("❌ Error searching products:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Filter products by category and price
+app.get("/api/products/filter", (req, res) => {
+  const { category, minPrice, maxPrice } = req.query;
+  console.log("🔍 Filtering products - category:", category, "price range:", minPrice, "-", maxPrice);
+  try {
+    let query = "SELECT * FROM products WHERE 1=1";
+    const params = [];
+
+    if (category) {
+      query += " AND category = ?";
+      params.push(category);
+    }
+
+    if (minPrice !== undefined) {
+      query += " AND price >= ?";
+      params.push(parseFloat(minPrice));
+    }
+
+    if (maxPrice !== undefined) {
+      query += " AND price <= ?";
+      params.push(parseFloat(maxPrice));
+    }
+
+    const products = db.prepare(query).all(...params);
+
+    console.log("✅ Found", products.length, "products matching filters");
+    products.forEach(p => {
+      p.images = p.images ? JSON.parse(p.images) : [];
+    });
+    res.json(products);
+  } catch (err) {
+    console.error("❌ Error filtering products:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get unique categories
+app.get("/api/categories", (req, res) => {
+  console.log("📂 Fetching product categories");
+  try {
+    const categories = db.prepare(
+      "SELECT DISTINCT category FROM products WHERE category IS NOT NULL ORDER BY category"
+    ).all();
+
+    const categoryNames = categories.map(c => c.category);
+    console.log("✅ Found", categoryNames.length, "categories");
+    res.json(categoryNames);
+  } catch (err) {
+    console.error("❌ Error fetching categories:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get product by ID - MUST come after /search and /filter
 app.get("/api/products/:id", (req, res) => {
   const id = req.params.id;
   console.log("📦 Fetching product:", id);
@@ -241,17 +339,19 @@ app.get("/api/products/:id", (req, res) => {
 app.post("/api/products", upload.single("image"), (req, res) => {
   console.log("📝 Adding new product:", req.body.name);
   try {
-    const { name, description, price, stock } = req.body;
+    const { name, description, price, stock, category, rating } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : null;
 
     const result = db.prepare(
-      "INSERT INTO products (name, description, price, stock, images) VALUES (?, ?, ?, ?, ?)"
+      "INSERT INTO products (name, description, price, stock, images, category, rating) VALUES (?, ?, ?, ?, ?, ?, ?)"
     ).run(
       name,
       description,
       parseFloat(price),
       parseInt(stock),
-      image ? JSON.stringify([image]) : JSON.stringify([])
+      image ? JSON.stringify([image]) : JSON.stringify([]),
+      category || "Electronics",
+      parseFloat(rating) || 0
     );
 
     console.log("✅ Product created with ID:", result.lastInsertRowid);
@@ -266,7 +366,7 @@ app.put("/api/products/:id", upload.single("image"), (req, res) => {
   const id = req.params.id;
   console.log("📝 Updating product:", id);
   try {
-    const { name, description, price, stock } = req.body;
+    const { name, description, price, stock, category, rating } = req.body;
     const product = db.prepare("SELECT * FROM products WHERE id = ?").get(id);
     
     if (!product) {
@@ -281,13 +381,15 @@ app.put("/api/products/:id", upload.single("image"), (req, res) => {
     }
 
     const result = db.prepare(
-      "UPDATE products SET name = ?, description = ?, price = ?, stock = ?, images = ? WHERE id = ?"
+      "UPDATE products SET name = ?, description = ?, price = ?, stock = ?, images = ?, category = ?, rating = ? WHERE id = ?"
     ).run(
       name,
       description,
       parseFloat(price),
       parseInt(stock),
       JSON.stringify(images),
+      category || product.category,
+      parseFloat(rating) !== undefined ? parseFloat(rating) : product.rating,
       id
     );
 

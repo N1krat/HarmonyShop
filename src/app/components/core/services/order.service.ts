@@ -5,7 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = 'http://localhost:3000/api/orders';
+  private apiUrl = 'http://localhost:3000/orders';
 
   constructor(private http: HttpClient) {}
 
@@ -16,5 +16,25 @@ export class OrderService {
         Authorization: `Bearer ${token}`
       }
     });
+  }
+
+  getOrdersByUserId(userId: number) {
+    console.log('📋 Fetching orders for user:', userId);
+    return this.http.get(`${this.apiUrl}/${userId}`);
+  }
+
+  createOrder(userId: number, total: number, products: any[]) {
+    console.log('📝 Creating order for user:', userId, 'total:', total);
+    const orderData = {
+      user_id: userId,
+      total: total,
+      products: products
+    };
+    return this.http.post(this.apiUrl, orderData);
+  }
+
+  updateOrderStatus(orderId: number, status: number) {
+    console.log('📝 Updating order status:', orderId, 'status:', status);
+    return this.http.put(`${this.apiUrl}/${orderId}`, { status });
   }
 }

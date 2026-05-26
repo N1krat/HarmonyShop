@@ -6,6 +6,17 @@
       HarmonyShop
     </a>
 
+    <div class="search-bar mx-auto" style="flex: 1; max-width: 400px;">
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Search products..." 
+        [(ngModel)]="searchQuery"
+        (keyup)="onSearchKeyup($event)"
+        style="border-radius: 20px; padding: 10px 15px;"
+      />
+    </div>
+
     <ul class="navbar-nav">
 
       <a class="nav-link" routerLink="/products">
@@ -28,7 +39,7 @@
           </a>
         </ng-container>
 
-        <a class="nav-link" (click)="logout()">
+        <a class="nav-link" (click)="logout()" style="cursor: pointer;">
           Logout
         </a>
 

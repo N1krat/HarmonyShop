@@ -9,11 +9,13 @@ import { AdminOrders } from './components/admin/pages/orders/admin-orders.compon
 import { AdminProducts } from './components/admin/pages/products/admin-products.component';
 import { AdminUsers } from './components/admin/pages/users/admin-users.component';
 import { CartConnectorComponent } from './components/cart/cart-connector/cart-connector.component';
+import { ProductPageConnectorComponent } from './components/productPage/productPage-connector/productPage-connector.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeConnectorComponent },
   { path: 'products', component: ProductConnectorComponent },
+  { path: 'product/:id', component: ProductPageConnectorComponent },
   { path: 'cart', component: CartConnectorComponent },
   {
     path: 'login',

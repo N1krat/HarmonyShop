@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../components/core/services/auth.service'; // adjust path if needed
 
 @Component({
@@ -8,12 +9,13 @@ import { AuthService } from '../components/core/services/auth.service'; // adjus
   standalone: true,
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
-  imports: [RouterLink, CommonModule]
+  imports: [RouterLink, CommonModule, FormsModule]
 })
 export class SharedHeaderComponent implements OnInit {
   isLogged = false;
   isAdmin = false;
   userEmail: string | null = null;
+  searchQuery = '';
 
   constructor(
     private router: Router,
@@ -43,5 +45,21 @@ export class SharedHeaderComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+  }
+
+  search() {
+    console.log('🔍 Searching for:', this.searchQuery);
+    if (this.searchQuery.trim()) {
+      this.router.navigate(['/products'], {
+        queryParams: { search: this.searchQuery }
+      });
+      this.searchQuery = '';
+    }
+  }
+
+  onSearchKeyup(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.search();
+    }
   }
 }
