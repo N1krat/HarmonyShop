@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AdminService } from '../../core/services/admin.service';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -8,7 +9,7 @@ import { AuthService } from '../../core/services/auth.service';
   standalone: true,
   templateUrl: './body.html',
   styleUrls: ['./body.css'],
-  imports: [CommonModule]
+  imports: [CommonModule, RouterModule]
 })
 export class BodyComponent implements OnInit {
   email: string | null = null;

@@ -1,0 +1,75 @@
+<div class="lessons-page">
+  <!-- Header with Back Button -->
+  <div class="lessons-header">
+    <div class="container-fluid">
+      <div class="header-top">
+        <button class="back-button" (click)="goBack()">← Back</button>
+        <h1 class="header-title">{{ instrument?.name || 'Lessons' }} Lessons</h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="lessons-container">
+    <div class="container-fluid">
+      <div class="lessons-content">
+        <!-- Video Player Section -->
+        <div class="video-section">
+          <div class="video-player" *ngIf="selectedLesson">
+            <iframe 
+              [src]="videoUrl" 
+              title="Video player"
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <!-- Lesson Info -->
+          <div class="lesson-info" *ngIf="selectedLesson">
+            <div class="info-header">
+              <div>
+                <h2 class="lesson-title">{{ selectedLesson.title }}</h2>
+                <div class="lesson-meta">
+                  <span class="meta-item">⏱️ {{ selectedLesson.duration }}</span>
+                  <span class="meta-item badge" [ngClass]="getLevelClass(selectedLesson.level)">
+                    {{ selectedLesson.level }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="lesson-description">
+              <p>Learn this lesson step by step. Make sure to practice what you've learned before moving to the next module.</p>
+              <button class="btn-continue">Mark as Complete & Continue →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lessons Sidebar -->
+        <div class="lessons-sidebar">
+          <div class="sidebar-header">
+            <h3>{{ lessons.length }} Lessons</h3>
+          </div>
+
+          <div class="lessons-list">
+            <div *ngFor="let lesson of lessons; let i = index"
+                 class="lesson-item"
+                 [class.active]="selectedLesson?.id === lesson.id"
+                 (click)="selectLesson(lesson)">
+              
+              <div class="lesson-number">{{ i + 1 }}</div>
+              
+              <div class="lesson-content">
+                <h4 class="lesson-item-title">{{ lesson.title }}</h4>
+                <span class="lesson-duration">{{ lesson.duration }}</span>
+              </div>
+
+              <div class="lesson-checkmark" *ngIf="selectedLesson?.id === lesson.id">✓</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

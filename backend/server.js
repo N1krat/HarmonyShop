@@ -473,11 +473,25 @@ app.post("/orders", (req, res) => {
   const { user_id, total, products } = req.body;
   console.log("📝 Creating order for user:", user_id, "total:", total);
   try {
-    const productsJSON = JSON.stringify(products);
+    // Fetch complete product details from database
+    const enrichedProducts = products.map(item => {
+      const product = db.prepare("SELECT * FROM products WHERE id = ?").get(item.id);
+      return {
+        id: item.id,
+        name: product?.name || item.name,
+        price: product?.price || item.price,
+        quantity: item.quantity,
+        images: product?.images ? JSON.parse(product.images) : [],
+        category: product?.category || '',
+        rating: product?.rating || 0
+      };
+    });
+
+    const productsJSON = JSON.stringify(enrichedProducts);
     const result = db.prepare(`
       INSERT INTO orders (user_id, total, status, products)
-      VALUES (?, ?, 0, ?)
-    `).run(user_id, total, productsJSON);
+      VALUES (?, ?, ?, ?)
+    `).run(user_id, total, 'Pending', productsJSON);
 
     console.log("✅ Order created with ID:", result.lastInsertRowid);
     res.json({ success: true, orderId: result.lastInsertRowid });
@@ -501,7 +515,7 @@ app.put("/orders/:id", (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    console.log("✅ Order updated successfully");
+    console.log("✅ Order updated successfully - Status:", status);
     res.json({ success: true, orderId, status });
   } catch (err) {
     console.error("❌ Error updating order:", err);

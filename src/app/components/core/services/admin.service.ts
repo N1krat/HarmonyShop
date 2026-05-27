@@ -64,7 +64,7 @@ getAllOrders() {
   return this.http.get<any[]>('http://localhost:3000/orders');
 }
 
-updateOrderStatus(orderId: number, status: number) {
+updateOrderStatus(orderId: number, status: string) {
   return this.http.put(`http://localhost:3000/orders/${orderId}`, { status });
 }
 
