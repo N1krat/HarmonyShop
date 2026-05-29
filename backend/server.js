@@ -9,14 +9,10 @@ const jwt = require("jsonwebtoken");
 
 const SECRET_KEY = "mysecret123";
 
-// Initialize database with better error handling
 let db;
 try {
   db = new Database("database.db");
-  console.log("✅ Database connected successfully");
-  console.log("📍 Database location:", path.resolve("database.db"));
 } catch (err) {
-  console.error("❌ Database connection failed:", err);
   process.exit(1);
 }
 
@@ -24,33 +20,28 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
-
-console.log("📁 Uploads directory:", path.join(__dirname, "uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 if (!fs.existsSync("./uploads")) {
   fs.mkdirSync("./uploads");
-  console.log("✅ Uploads directory created");
 }
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "./uploads"),
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname)
 });
+
 const upload = multer({ storage });
 
-// Initialize database function
 async function initializeDatabase() {
   try {
-    // Create tables if they don't exist
     db.prepare(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL UNIQUE, 
+        email TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL
       )
     `).run();
-    console.log("✅ Users table ready");
 
     db.prepare(`
       CREATE TABLE IF NOT EXISTS products (
@@ -58,28 +49,20 @@ async function initializeDatabase() {
         name TEXT NOT NULL,
         description TEXT,
         price REAL NOT NULL,
-        stock INTEGER NOT NULL, 
+        stock INTEGER NOT NULL,
         images TEXT,
         category TEXT DEFAULT 'Electronics',
         rating REAL DEFAULT 0
       )
     `).run();
-    console.log("✅ Products table ready");
 
-    // Add category and rating columns if they don't exist (for existing databases)
     try {
       db.prepare("ALTER TABLE products ADD COLUMN category TEXT DEFAULT 'Electronics'").run();
-      console.log("✅ Added category column");
-    } catch (err) {
-      // Column might already exist, ignore
-    }
+    } catch (err) {}
 
     try {
       db.prepare("ALTER TABLE products ADD COLUMN rating REAL DEFAULT 0").run();
-      console.log("✅ Added rating column");
-    } catch (err) {
-      // Column might already exist, ignore
-    }
+    } catch (err) {}
 
     db.prepare(`
       CREATE TABLE IF NOT EXISTS orders (
@@ -91,182 +74,246 @@ async function initializeDatabase() {
         FOREIGN KEY(user_id) REFERENCES users(id)
       )
     `).run();
-    console.log("✅ Orders table ready");
 
-    // Seed test data if tables are empty
     const userCount = db.prepare("SELECT COUNT(*) as count FROM users").get().count;
+
     if (userCount === 0) {
-      console.log("📝 Seeding test data...");
-      
-      // Add admin user
       const adminPass = await bcrypt.hash("admin123", 10);
-      db.prepare("INSERT INTO users (email, password) VALUES (?, ?)").run("admin@example.com", adminPass);
-      console.log("✅ Admin user created: admin@example.com / admin123");
 
-      // Add test user
+      db.prepare(
+        "INSERT INTO users (email, password) VALUES (?, ?)"
+      ).run("admin@example.com", adminPass);
+
       const userPass = await bcrypt.hash("user123", 10);
-      db.prepare("INSERT INTO users (email, password) VALUES (?, ?)").run("user@example.com", userPass);
-      console.log("✅ Test user created: user@example.com / user123");
 
-      // Add sample products with categories and ratings
+      db.prepare(
+        "INSERT INTO users (email, password) VALUES (?, ?)"
+      ).run("user@example.com", userPass);
+
       const products = [
-        { name: "Laptop", description: "High-performance laptop for professionals", price: 999.99, stock: 5, category: "Electronics", rating: 4.5 },
-        { name: "Mouse", description: "Wireless mouse with precision tracking", price: 29.99, stock: 20, category: "Electronics", rating: 4.2 },
-        { name: "Keyboard", description: "Mechanical keyboard with RGB lighting", price: 79.99, stock: 15, category: "Electronics", rating: 4.8 },
-        { name: "Monitor", description: "27-inch 4K monitor", price: 349.99, stock: 8, category: "Electronics", rating: 4.6 },
-        { name: "Desk Lamp", description: "LED desk lamp with adjustable brightness", price: 49.99, stock: 12, category: "Accessories", rating: 4.3 },
-        { name: "USB Cable", description: "High-speed USB 3.0 cable", price: 9.99, stock: 50, category: "Accessories", rating: 4.1 }
+        {
+          name: "Laptop",
+          description: "High-performance laptop for professionals",
+          price: 999.99,
+          stock: 5,
+          category: "Electronics",
+          rating: 4.5
+        },
+        {
+          name: "Mouse",
+          description: "Wireless mouse with precision tracking",
+          price: 29.99,
+          stock: 20,
+          category: "Electronics",
+          rating: 4.2
+        },
+        {
+          name: "Keyboard",
+          description: "Mechanical keyboard with RGB lighting",
+          price: 79.99,
+          stock: 15,
+          category: "Electronics",
+          rating: 4.8
+        },
+        {
+          name: "Monitor",
+          description: "27-inch 4K monitor",
+          price: 349.99,
+          stock: 8,
+          category: "Electronics",
+          rating: 4.6
+        },
+        {
+          name: "Desk Lamp",
+          description: "LED desk lamp with adjustable brightness",
+          price: 49.99,
+          stock: 12,
+          category: "Accessories",
+          rating: 4.3
+        },
+        {
+          name: "USB Cable",
+          description: "High-speed USB 3.0 cable",
+          price: 9.99,
+          stock: 50,
+          category: "Accessories",
+          rating: 4.1
+        }
       ];
 
       products.forEach(p => {
-        db.prepare(
-          "INSERT INTO products (name, description, price, stock, images, category, rating) VALUES (?, ?, ?, ?, ?, ?, ?)"
-        ).run(p.name, p.description, p.price, p.stock, JSON.stringify([]), p.category, p.rating);
+        db.prepare(`
+          INSERT INTO products 
+          (name, description, price, stock, images, category, rating) 
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          p.name,
+          p.description,
+          p.price,
+          p.stock,
+          JSON.stringify([]),
+          p.category,
+          p.rating
+        );
       });
-      console.log("✅ Sample products created");
-    } else {
-      const prodCount = db.prepare("SELECT COUNT(*) as count FROM products").get().count;
-      console.log(`📊 Database has ${userCount} users and ${prodCount} products`);
     }
-  } catch (err) {
-    console.error("❌ Table creation error:", err);
-  }
+  } catch (err) {}
 }
 
-// Initialize database
 initializeDatabase();
-
-// Routes
 
 app.get("/", (req, res) => {
   res.json({ message: "Server is running" });
 });
 
-// Users endpoints
 app.get("/users", (req, res) => {
-  console.log("👥 Fetching all users");
   try {
     const users = db.prepare("SELECT id, email FROM users").all();
-    console.log("✅ Retrieved", users.length, "users");
     res.json(users);
   } catch (err) {
-    console.error("❌ Error fetching users:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 app.post("/users", async (req, res) => {
-  const { email, password } = req.body; 
-  console.log("👤 Creating new user:", email);
+  const { email, password } = req.body;
+
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const result = db.prepare(
-      "INSERT INTO users (email, password) VALUES (?, ?)"
-    ).run(email, hashedPassword);
-    console.log("✅ User created with ID:", result.lastInsertRowid);
-    res.json({ success: true, id: result.lastInsertRowid });
+
+    const result = db.prepare(`
+      INSERT INTO users (email, password)
+      VALUES (?, ?)
+    `).run(email, hashedPassword);
+
+    res.json({
+      success: true,
+      id: result.lastInsertRowid
+    });
   } catch (err) {
-    console.error("❌ Error creating user:", err.message);
     res.status(400).json({ error: err.message });
   }
 });
 
-// Auth endpoints
 app.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log("🔐 Login attempt for:", email);
+
   try {
     if (!email || !password) {
-      console.warn("⚠️ Missing email or password");
-      return res.status(400).json({ error: "Email and password required" });
+      return res.status(400).json({
+        error: "Email and password required"
+      });
     }
 
-    const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
+    const user = db.prepare(`
+      SELECT * FROM users WHERE email = ?
+    `).get(email);
+
     if (!user) {
-      console.warn("⚠️ User not found:", email);
-      return res.status(400).json({ error: "User not found" });
+      return res.status(400).json({
+        error: "User not found"
+      });
     }
 
     const valid = await bcrypt.compare(password, user.password);
+
     if (!valid) {
-      console.warn("⚠️ Invalid password for user:", email);
-      return res.status(400).json({ error: "Invalid password" });
+      return res.status(400).json({
+        error: "Invalid password"
+      });
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: "1h" });
-    console.log("✅ Login successful for:", email);
-    res.json({ token, user: { id: user.id, email: user.email } }); 
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email
+      },
+      SECRET_KEY,
+      {
+        expiresIn: "1h"
+      }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email
+      }
+    });
   } catch (err) {
-    console.error("❌ Login error:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 app.post("/auth/register", async (req, res) => {
   const { email, password } = req.body;
-  console.log("📝 Registration attempt for:", email);
+
   try {
     if (!email || !password) {
-      console.warn("⚠️ Missing email or password");
-      return res.status(400).json({ error: "Email and password required" });
+      return res.status(400).json({
+        error: "Email and password required"
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const result = db.prepare(
-      "INSERT INTO users (email, password) VALUES (?, ?)"
-    ).run(email, hashedPassword);
-    console.log("✅ Registration successful for:", email, "ID:", result.lastInsertRowid);
-    res.json({ success: true, id: result.lastInsertRowid });
+
+    const result = db.prepare(`
+      INSERT INTO users (email, password)
+      VALUES (?, ?)
+    `).run(email, hashedPassword);
+
+    res.json({
+      success: true,
+      id: result.lastInsertRowid
+    });
   } catch (err) {
-    console.error("❌ Registration error:", err.message);
     res.status(400).json({ error: err.message });
   }
 });
 
-// Products endpoints
 app.get("/api/products", (req, res) => {
-  console.log("📦 Fetching all products");
   try {
     const products = db.prepare("SELECT * FROM products").all();
-    console.log("✅ Retrieved", products.length, "products");
+
     products.forEach(p => {
       p.images = p.images ? JSON.parse(p.images) : [];
     });
+
     res.json(products);
   } catch (err) {
-    console.error("❌ Error fetching products:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Search products - MUST come before :id route
 app.get("/api/products/search", (req, res) => {
   const { q } = req.query;
-  console.log("🔍 Searching products with query:", q);
+
   try {
     if (!q) {
       return res.json([]);
     }
 
-    const products = db.prepare(
-      "SELECT * FROM products WHERE name LIKE ? OR description LIKE ? OR category LIKE ?"
-    ).all(`%${q}%`, `%${q}%`, `%${q}%`);
+    const products = db.prepare(`
+      SELECT * FROM products
+      WHERE name LIKE ?
+      OR description LIKE ?
+      OR category LIKE ?
+    `).all(`%${q}%`, `%${q}%`, `%${q}%`);
 
-    console.log("✅ Found", products.length, "products matching:", q);
     products.forEach(p => {
       p.images = p.images ? JSON.parse(p.images) : [];
     });
+
     res.json(products);
   } catch (err) {
-    console.error("❌ Error searching products:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Filter products by category and price
 app.get("/api/products/filter", (req, res) => {
   const { category, minPrice, maxPrice } = req.query;
-  console.log("🔍 Filtering products - category:", category, "price range:", minPrice, "-", maxPrice);
+
   try {
     let query = "SELECT * FROM products WHERE 1=1";
     const params = [];
@@ -288,63 +335,75 @@ app.get("/api/products/filter", (req, res) => {
 
     const products = db.prepare(query).all(...params);
 
-    console.log("✅ Found", products.length, "products matching filters");
     products.forEach(p => {
       p.images = p.images ? JSON.parse(p.images) : [];
     });
+
     res.json(products);
   } catch (err) {
-    console.error("❌ Error filtering products:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get unique categories
 app.get("/api/categories", (req, res) => {
-  console.log("📂 Fetching product categories");
   try {
-    const categories = db.prepare(
-      "SELECT DISTINCT category FROM products WHERE category IS NOT NULL ORDER BY category"
-    ).all();
+    const categories = db.prepare(`
+      SELECT DISTINCT category
+      FROM products
+      WHERE category IS NOT NULL
+      ORDER BY category
+    `).all();
 
     const categoryNames = categories.map(c => c.category);
-    console.log("✅ Found", categoryNames.length, "categories");
+
     res.json(categoryNames);
   } catch (err) {
-    console.error("❌ Error fetching categories:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get product by ID - MUST come after /search and /filter
 app.get("/api/products/:id", (req, res) => {
   const id = req.params.id;
-  console.log("📦 Fetching product:", id);
+
   try {
-    const product = db.prepare("SELECT * FROM products WHERE id = ?").get(id);
+    const product = db.prepare(`
+      SELECT * FROM products WHERE id = ?
+    `).get(id);
+
     if (!product) {
-      console.warn("⚠️ Product not found:", id);
-      return res.status(404).json({ error: "Product not found" });
+      return res.status(404).json({
+        error: "Product not found"
+      });
     }
 
     product.images = product.images ? JSON.parse(product.images) : [];
-    console.log("✅ Retrieved product:", product.name);
+
     res.json(product);
   } catch (err) {
-    console.error("❌ Error fetching product:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 app.post("/api/products", upload.single("image"), (req, res) => {
-  console.log("📝 Adding new product:", req.body.name);
   try {
-    const { name, description, price, stock, category, rating } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
+    const {
+      name,
+      description,
+      price,
+      stock,
+      category,
+      rating
+    } = req.body;
 
-    const result = db.prepare(
-      "INSERT INTO products (name, description, price, stock, images, category, rating) VALUES (?, ?, ?, ?, ?, ?, ?)"
-    ).run(
+    const image = req.file
+      ? `/uploads/${req.file.filename}`
+      : null;
+
+    const result = db.prepare(`
+      INSERT INTO products
+      (name, description, price, stock, images, category, rating)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(
       name,
       description,
       parseFloat(price),
@@ -354,149 +413,198 @@ app.post("/api/products", upload.single("image"), (req, res) => {
       parseFloat(rating) || 0
     );
 
-    console.log("✅ Product created with ID:", result.lastInsertRowid);
-    res.json({ success: true, id: result.lastInsertRowid });
+    res.json({
+      success: true,
+      id: result.lastInsertRowid
+    });
   } catch (err) {
-    console.error("❌ Error creating product:", err);
     res.status(400).json({ error: err.message });
   }
 });
 
 app.put("/api/products/:id", upload.single("image"), (req, res) => {
   const id = req.params.id;
-  console.log("📝 Updating product:", id);
+
   try {
-    const { name, description, price, stock, category, rating } = req.body;
-    const product = db.prepare("SELECT * FROM products WHERE id = ?").get(id);
-    
+    const {
+      name,
+      description,
+      price,
+      stock,
+      category,
+      rating
+    } = req.body;
+
+    const product = db.prepare(`
+      SELECT * FROM products WHERE id = ?
+    `).get(id);
+
     if (!product) {
-      console.warn("⚠️ Product not found:", id);
-      return res.status(404).json({ error: "Product not found" });
+      return res.status(404).json({
+        error: "Product not found"
+      });
     }
 
-    let images = product.images ? JSON.parse(product.images) : [];
-    
+    let images = product.images
+      ? JSON.parse(product.images)
+      : [];
+
     if (req.file) {
       images.push(`/uploads/${req.file.filename}`);
     }
 
-    const result = db.prepare(
-      "UPDATE products SET name = ?, description = ?, price = ?, stock = ?, images = ?, category = ?, rating = ? WHERE id = ?"
-    ).run(
+    const result = db.prepare(`
+      UPDATE products
+      SET
+        name = ?,
+        description = ?,
+        price = ?,
+        stock = ?,
+        images = ?,
+        category = ?,
+        rating = ?
+      WHERE id = ?
+    `).run(
       name,
       description,
       parseFloat(price),
       parseInt(stock),
       JSON.stringify(images),
       category || product.category,
-      parseFloat(rating) !== undefined ? parseFloat(rating) : product.rating,
+      parseFloat(rating) !== undefined
+        ? parseFloat(rating)
+        : product.rating,
       id
     );
 
     if (result.changes === 0) {
-      console.warn("⚠️ Product update failed:", id);
-      return res.status(400).json({ error: "Product update failed" });
+      return res.status(400).json({
+        error: "Product update failed"
+      });
     }
 
-    console.log("✅ Product updated:", id);
-    res.json({ success: true, id });
+    res.json({
+      success: true,
+      id
+    });
   } catch (err) {
-    console.error("❌ Error updating product:", err);
     res.status(400).json({ error: err.message });
   }
 });
 
 app.delete("/api/products/:id", (req, res) => {
   const { id } = req.params;
-  console.log("🗑️ Deleting product:", id);
+
   try {
-    const product = db.prepare("SELECT * FROM products WHERE id = ?").get(id);
+    const product = db.prepare(`
+      SELECT * FROM products WHERE id = ?
+    `).get(id);
+
     if (!product) {
-      console.warn("⚠️ Product not found:", id);
-      return res.status(404).json({ error: "Product not found" });
+      return res.status(404).json({
+        error: "Product not found"
+      });
     }
 
     if (product.images) {
       const imagesArray = JSON.parse(product.images);
+
       imagesArray.forEach(imgPath => {
         const filePath = path.join(__dirname, imgPath);
+
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
-          console.log("🗑️ Deleted image:", imgPath);
         }
       });
     }
 
-    db.prepare("DELETE FROM products WHERE id = ?").run(id);
+    db.prepare(`
+      DELETE FROM products WHERE id = ?
+    `).run(id);
 
-    console.log("✅ Product deleted:", id);
-    res.json({ success: true, message: "Product deleted" });
+    res.json({
+      success: true,
+      message: "Product deleted"
+    });
   } catch (err) {
-    console.error("❌ Error deleting product:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Orders endpoints
 app.get("/orders/:userId", (req, res) => {
   const userId = req.params.userId;
-  console.log("📋 Fetching orders for user:", userId);
+
   try {
-    const orders = db.prepare("SELECT * FROM orders WHERE user_id = ?").all(userId);
-    console.log("✅ Retrieved", orders.length, "orders for user", userId);
+    const orders = db.prepare(`
+      SELECT * FROM orders WHERE user_id = ?
+    `).all(userId);
+
     orders.forEach(order => {
       order.products = JSON.parse(order.products);
     });
+
     res.json(orders);
   } catch (err) {
-    console.error("❌ Error fetching user orders:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 app.get("/orders", (req, res) => {
-  console.log("📋 Fetching all orders");
   try {
     const orders = db.prepare("SELECT * FROM orders").all();
-    console.log("✅ Retrieved", orders.length, "total orders");
+
     orders.forEach(order => {
-      order.products = order.products ? JSON.parse(order.products) : [];
+      order.products = order.products
+        ? JSON.parse(order.products)
+        : [];
     });
+
     res.json(orders);
   } catch (err) {
-    console.error("❌ Error fetching all orders:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 app.post("/orders", (req, res) => {
   const { user_id, total, products } = req.body;
-  console.log("📝 Creating order for user:", user_id, "total:", total);
+
   try {
-    // Fetch complete product details from database
     const enrichedProducts = products.map(item => {
-      const product = db.prepare("SELECT * FROM products WHERE id = ?").get(item.id);
+      const product = db.prepare(`
+        SELECT * FROM products WHERE id = ?
+      `).get(item.id);
+
       return {
         id: item.id,
         name: product?.name || item.name,
         price: product?.price || item.price,
         quantity: item.quantity,
-        images: product?.images ? JSON.parse(product.images) : [],
-        category: product?.category || '',
+        images: product?.images
+          ? JSON.parse(product.images)
+          : [],
+        category: product?.category || "",
         rating: product?.rating || 0
       };
     });
 
     const productsJSON = JSON.stringify(enrichedProducts);
-    const result = db.prepare(`
-      INSERT INTO orders (user_id, total, status, products)
-      VALUES (?, ?, ?, ?)
-    `).run(user_id, total, 'Pending', productsJSON);
 
-    console.log("✅ Order created with ID:", result.lastInsertRowid);
-    res.json({ success: true, orderId: result.lastInsertRowid });
+    const result = db.prepare(`
+      INSERT INTO orders
+      (user_id, total, status, products)
+      VALUES (?, ?, ?, ?)
+    `).run(
+      user_id,
+      total,
+      "Pending",
+      productsJSON
+    );
+
+    res.json({
+      success: true,
+      orderId: result.lastInsertRowid
+    });
   } catch (err) {
-    console.error("❌ Error creating order:", err);
     res.status(400).json({ error: err.message });
   }
 });
@@ -504,33 +612,30 @@ app.post("/orders", (req, res) => {
 app.put("/orders/:id", (req, res) => {
   const orderId = req.params.id;
   const { status } = req.body;
-  console.log("📝 Updating order:", orderId, "status:", status);
 
   try {
-    const result = db.prepare("UPDATE orders SET status = ? WHERE id = ?")
-                     .run(status, orderId);
+    const result = db.prepare(`
+      UPDATE orders
+      SET status = ?
+      WHERE id = ?
+    `).run(status, orderId);
 
     if (result.changes === 0) {
-      console.warn("⚠️ Order not found:", orderId);
-      return res.status(404).json({ error: "Order not found" });
+      return res.status(404).json({
+        error: "Order not found"
+      });
     }
 
-    console.log("✅ Order updated successfully - Status:", status);
-    res.json({ success: true, orderId, status });
+    res.json({
+      success: true,
+      orderId,
+      status
+    });
   } catch (err) {
-    console.error("❌ Error updating order:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 app.listen(3000, () => {
-  console.log("===============================================");
-  console.log("🚀 Server running on http://localhost:3000");
-  console.log("📊 Database: database.db");
-  console.log("📁 Uploads: ./uploads");
-  console.log("===============================================");
-  console.log("\n📝 Test credentials:");
-  console.log("   Admin:  admin@example.com / admin123");
-  console.log("   User:   user@example.com / user123");
-  console.log("===============================================\n");
+  console.log("Server running on http://localhost:3000");
 });

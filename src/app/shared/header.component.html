@@ -1,62 +1,42 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="site-navbar">
   <div class="container navbar-container">
-
-   
     <a class="navbar-brand" routerLink="/home">
-      HarmonyShop
+      {{ 'nav.brand' | translate }}
     </a>
 
-    <div class="search-bar mx-auto" style="flex: 1; max-width: 400px;">
-      <input 
-        type="text" 
-        class="form-control" 
-        placeholder="Search products..." 
+    <div class="header-search">
+      <input
+        type="text"
+        class="form-control"
+        [placeholder]="'nav.searchPlaceholder' | translate"
         [(ngModel)]="searchQuery"
         (keyup)="onSearchKeyup($event)"
-        style="border-radius: 20px; padding: 10px 15px;"
       />
     </div>
 
-    <ul class="navbar-nav">
+    <div class="navbar-right">
+      <ul class="navbar-nav">
+        <a class="nav-link" routerLink="/products">{{ 'nav.products' | translate }}</a>
+        <a class="nav-link" routerLink="/learning">{{ 'nav.learn' | translate }}</a>
 
-      <a class="nav-link" routerLink="/products">
-        Products
-      </a>
-
-      <a class="nav-link" routerLink="/learning">
-        Learn
-      </a>
-
-      <ng-container *ngIf="isLogged">
-
-        <a class="nav-link" routerLink="/profile">
-          Profile
-        </a>
-
-        <a class="nav-link" routerLink="/cart">
-          Cart
-        </a>
-
-        <ng-container *ngIf="isAdmin">
-          <a class="nav-link" routerLink="/admin">
-            Admin Panel
-          </a>
+        <ng-container *ngIf="isLogged">
+          <a class="nav-link" routerLink="/profile">{{ 'nav.profile' | translate }}</a>
+          <a class="nav-link" routerLink="/cart">{{ 'nav.cart' | translate }}</a>
+          <ng-container *ngIf="isAdmin">
+            <a class="nav-link" routerLink="/admin">{{ 'nav.admin' | translate }}</a>
+          </ng-container>
+          <a class="nav-link" (click)="logout()">{{ 'nav.logout' | translate }}</a>
         </ng-container>
 
-        <a class="nav-link" (click)="logout()" style="cursor: pointer;">
-          Logout
-        </a>
+        <ng-container *ngIf="!isLogged">
+          <a class="nav-link" routerLink="/login">{{ 'nav.login' | translate }}</a>
+        </ng-container>
+      </ul>
 
-      </ng-container>
-
-      <ng-container *ngIf="!isLogged">
-
-        <a class="nav-link" routerLink="/login">
-          Login
-        </a>
-
-      </ng-container>
-
-    </ul>
+      <div class="header-actions">
+        <app-language-selector></app-language-selector>
+        <app-theme-toggle></app-theme-toggle>
+      </div>
+    </div>
   </div>
 </nav>

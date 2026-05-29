@@ -1,28 +1,25 @@
-<div class="container mt-5">
-  <h2 class="mb-4 text-center">Your Cart</h2>
+<div class="container mt-3">
+  <h2 class="mb-4 text-center">{{ 'cart.title' | translate }}</h2>
 
-  <div *ngIf="cartItems.length === 0" class="text-center py-5 shadow rounded p-4 bg-white">
-    <p class="fs-5">Your cart is empty.</p>
-    <a routerLink="/products" class="btn btn-primary btn-lg">Go to Shop</a>
+  <div *ngIf="cartItems.length === 0" class="text-center py-5 shadow rounded p-4 card">
+    <p class="fs-5">{{ 'cart.empty' | translate }}</p>
+    <a routerLink="/products" class="btn btn-primary btn-lg">{{ 'cart.goToShop' | translate }}</a>
   </div>
 
-  <div *ngIf="cartItems.length > 0" class="shadow p-3 rounded bg-white">
-    <div class="row g-3 mb-4 p-2 shadow-sm rounded bg-light" *ngFor="let item of cartItems">
+  <div *ngIf="cartItems.length > 0" class="shadow p-3 rounded card">
+    <div class="row g-3 mb-4 p-2 shadow-sm rounded" style="background: var(--bg-elevated);" *ngFor="let item of cartItems">
       <div class="col-md-3">
         <div class="card shadow-sm h-100 rounded">
-          <img 
-            [src]="'http://localhost:3000' + item.image" 
-            alt="{{ item.name }}" 
-            class="img-fluid rounded"
-          />
+          <img [src]="'http://localhost:3000' + item.image" [alt]="item.name" class="img-fluid rounded" />
         </div>
       </div>
       <div class="col-md-9 d-flex flex-column justify-content-between">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h5 class="mb-0">{{ item.name }}</h5>
-          <button class="btn btn-sm btn-outline-danger" (click)="remove(item)" [disabled]="isCheckingOut">Remove</button>
+          <button class="btn btn-sm btn-outline-danger" (click)="remove(item)" [disabled]="isCheckingOut">
+            {{ 'cart.remove' | translate }}
+          </button>
         </div>
-
         <div class="d-flex justify-content-between align-items-center">
           <div class="d-flex align-items-center">
             <button class="btn btn-sm btn-outline-secondary me-2" (click)="decrease(item)" [disabled]="isCheckingOut">-</button>
@@ -34,15 +31,11 @@
       </div>
     </div>
 
-    <div class="card shadow-lg p-3 mt-3 rounded bg-white">
+    <div class="card shadow-lg p-3 mt-3 rounded">
       <div class="d-flex justify-content-between align-items-center">
-        <h4>Total: MDL {{ totalPrice.toFixed(2) }}</h4>
-        <button 
-          class="btn btn-success btn-lg" 
-          (click)="checkout()"
-          [disabled]="isCheckingOut"
-        >
-          {{ isCheckingOut ? 'Processing...' : 'Checkout' }}
+        <h4>{{ 'cart.total' | translate }}: MDL {{ totalPrice.toFixed(2) }}</h4>
+        <button class="btn btn-success btn-lg" (click)="checkout()" [disabled]="isCheckingOut">
+          {{ isCheckingOut ? ('cart.processing' | translate) : ('cart.checkout' | translate) }}
         </button>
       </div>
     </div>

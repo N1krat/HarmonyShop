@@ -1,0 +1,203 @@
+{
+  "nav": {
+    "brand": "HarmonyShop",
+    "searchPlaceholder": "Caută produse...",
+    "products": "Produse",
+    "learn": "Învață",
+    "profile": "Profil",
+    "cart": "Coș",
+    "admin": "Panou Admin",
+    "logout": "Deconectare",
+    "login": "Autentificare"
+  },
+  "footer": {
+    "copyright": "© 2026 HarmonyShop. Toate drepturile rezervate."
+  },
+  "common": {
+    "na": "N/A"
+  },
+  "auth": {
+    "loginTitle": "Autentificare",
+    "loginSubtitle": "Introdu datele pentru conectare",
+    "email": "Email",
+    "password": "Parolă",
+    "loginButton": "Autentificare",
+    "noAccount": "Nu ai cont?",
+    "registerLink": "Înregistrare",
+    "registerTitle": "Înregistrare",
+    "registerButton": "Înregistrare",
+    "hasAccount": "Ai deja cont?",
+    "loginLink": "Autentificare",
+    "errors": {
+      "required": "Emailul și parola sunt obligatorii",
+      "invalidCredentials": "Date de autentificare invalide",
+      "registrationFailed": "Înregistrarea a eșuat. Încearcă din nou."
+    },
+    "success": {
+      "registered": "Înregistrare reușită! Redirecționare către autentificare..."
+    }
+  },
+  "home": {
+    "topProducts": "Produsele Noastre Top",
+    "addToCart": "Adaugă în Coș"
+  },
+  "products": {
+    "filters": "Filtre",
+    "category": "Categorie",
+    "allCategories": "Toate Categoriile",
+    "priceRange": "Interval Preț",
+    "min": "Min",
+    "max": "Max",
+    "title": "Produse",
+    "resetFilters": "Resetează Filtrele",
+    "searchingFor": "Căutare",
+    "showing": "Afișare",
+    "productsCount": "produse",
+    "noProductsFiltered": "Niciun produs găsit. Încearcă alte filtre.",
+    "rating": "Evaluare",
+    "addToCart": "Adaugă în Coș",
+    "invalidProduct": "Produs invalid",
+    "addedToCart": "{{name}} a fost adăugat în coș"
+  },
+  "productPage": {
+    "home": "Acasă",
+    "products": "Produse",
+    "reviews": "recenzii",
+    "description": "Descriere",
+    "quantity": "Cantitate",
+    "addToCart": "Adaugă în Coș",
+    "addToFavorites": "Adaugă la Favorite",
+    "inStock": "În Stoc",
+    "outOfStock": "Stoc Epuizat",
+    "category": "Categorie",
+    "notFound": "Produsul nu a fost găsit.",
+    "sku": "Cod produs - SKU",
+    "availability": "Disponibilitate",
+    "inStockCount": "în stoc",
+    "invalidProduct": "Produs invalid",
+    "addedToCart": "{{name}} x{{qty}} adăugat în coș"
+  },
+  "cart": {
+    "title": "Coșul Tău",
+    "empty": "Coșul tău este gol.",
+    "goToShop": "Mergi la Magazin",
+    "remove": "Elimină",
+    "total": "Total",
+    "checkout": "Finalizează",
+    "processing": "Se procesează...",
+    "emptyAlert": "Coșul este gol",
+    "loginRequired": "Autentifică-te pentru a finaliza comanda",
+    "orderSuccess": "Comandă plasată cu succes! ID comandă: {{id}}",
+    "orderError": "Eroare la plasarea comenzii: {{message}}"
+  },
+  "profile": {
+    "welcome": "Bine ai venit în profilul tău",
+    "emailLabel": "Email:",
+    "ordersTitle": "Comenzile Tale",
+    "noOrders": "Nu ai comenzi încă.",
+    "goToShop": "Mergi la Magazin",
+    "order": "Comanda",
+    "userId": "ID Utilizator",
+    "total": "Total",
+    "items": "Articole",
+    "qty": "Cant",
+    "noItems": "Niciun articol în această comandă",
+    "pending": "În așteptare",
+    "completed": "Finalizată",
+    "canceled": "Anulată"
+  },
+  "learning": {
+    "title": "Învățarea Mea",
+    "tabCurrent": "Curent",
+    "tabRecent": "Recent",
+    "tabSaved": "Salvate",
+    "chooseInstrument": "Alege un Instrument de Învățat",
+    "subtitle": "Stăpânește instrumente muzicale populare cu cursurile noastre video",
+    "modules": "module",
+    "startLearning": "Începe Învățarea",
+    "instruments": {
+      "guitar": { "name": "Chitară", "desc": "Învață chitară acustică și electrică" },
+      "piano": { "name": "Pian", "desc": "Stăpânește tehnicile de pian și claviatură" },
+      "violin": { "name": "Vioară", "desc": "Coarde clasice și tehnici avansate" },
+      "drums": { "name": "Tobe", "desc": "Ritm, beat-uri și percuție" },
+      "saxophone": { "name": "Saxofon", "desc": "Lecții de jazz și saxofon clasic" },
+      "flute": { "name": "Flaut", "desc": "Instrumente de suflat și control al respirației" },
+      "unknown": { "name": "Instrument", "desc": "Lecții de muzică" }
+    }
+  },
+  "lessons": {
+    "back": "Înapoi",
+    "lessons": "Lecții",
+    "courseContent": "Conținut Curs",
+    "lessonDescription": "Învață această lecție pas cu pas. Exersează înainte de a trece la modulul următor.",
+    "markComplete": "Marchează ca Finalizat și Continuă",
+    "lessonsCount": "Lecții",
+    "noLessons": "Nu există lecții pentru acest instrument încă.",
+    "levels": {
+      "beginner": "Începător",
+      "intermediate": "Intermediar",
+      "advanced": "Avansat"
+    },
+    "guitar": {
+      "l1": "Bazele și Părțile Chitarei",
+      "l2": "Ținerea Chitarei",
+      "l3": "Acorduri de Bază",
+      "l4": "Pattern-uri de Strumming",
+      "l5": "Fingerpicking",
+      "l6": "Acorduri Barre",
+      "l7": "Bazele Lead Guitar",
+      "l8": "Cântec Complet"
+    },
+    "piano": {
+      "l1": "Tastele și Layout-ul Pianului",
+      "l2": "Poziția Mâinilor",
+      "l3": "Citirea Notelor",
+      "l4": "Scale Majore de Bază",
+      "l5": "Construcția Acordurilor",
+      "l6": "Melodii la Pian",
+      "l7": "Improvizație Jazz",
+      "l8": "Piesă Clasică",
+      "l9": "Tehnici Avansate",
+      "l10": "Pregătire pentru Scenă"
+    },
+    "violin": {
+      "l1": "Părțile Viorii",
+      "l2": "Ținerea Arcușului",
+      "l3": "Postura Corectă",
+      "l4": "Primele Note",
+      "l5": "Tehnica Vibrato",
+      "l6": "Schimbarea Pozițiilor",
+      "l7": "Repertoriu Clasic"
+    },
+    "drums": {
+      "l1": "Configurarea Tobei",
+      "l2": "Prinderea și Tehnica",
+      "l3": "Beat-uri de Bază",
+      "l4": "Exerciții de Coordination",
+      "l5": "Drum Fills",
+      "l6": "Pattern-uri Avansate"
+    },
+    "saxophone": {
+      "l1": "Bazele Saxofonului",
+      "l2": "Anca și Bocalul",
+      "l3": "Primele Sunete",
+      "l4": "Diagrama Degetelor",
+      "l5": "Dezvoltarea Tonului",
+      "l6": "Scale Jazz",
+      "l7": "Improvizație Blues",
+      "l8": "Tehnici Avansate"
+    },
+    "flute": {
+      "l1": "Asamblarea Flautului",
+      "l2": "Embouchure",
+      "l3": "Primele Note",
+      "l4": "Tehnici de Respirație",
+      "l5": "Scale și Arpeggii",
+      "l6": "Piese Clasice"
+    }
+  },
+  "theme": {
+    "switchToLight": "Comută la modul luminos",
+    "switchToDark": "Comută la modul întunecat"
+  }
+}

@@ -1,13 +1,11 @@
 .learning-page {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  min-height: 100vh;
-  color: #fff;
+  min-height: 100%;
+  color: var(--text-primary);
 }
 
-/* Header Styles */
 .learning-header {
-  background: rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--section-header-bg);
+  border-bottom: 1px solid var(--border-color);
   padding: 40px 0;
   margin-bottom: 60px;
 }
@@ -17,17 +15,18 @@
   font-weight: 700;
   margin-bottom: 30px;
   letter-spacing: -1px;
+  color: var(--text-primary);
 }
 
 .header-tabs {
   display: flex;
   gap: 30px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 16px;
 }
 
 .tab-link {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
   text-decoration: none;
   font-size: 16px;
   font-weight: 500;
@@ -38,23 +37,21 @@
 
 .tab-link:hover,
 .tab-link.active {
-  color: #00ff88;
-  border-bottom-color: #00ff88;
+  color: var(--brand);
+  border-bottom-color: var(--brand);
 }
 
-/* Learning Container */
 .learning-container {
   padding-bottom: 80px;
 }
 
-.container-fluid {
+.learning-page .container-fluid {
   max-width: 1400px;
   margin: 0 auto;
   padding-left: 40px;
   padding-right: 40px;
 }
 
-/* Page Title Section */
 .page-title-section {
   text-align: center;
   margin-bottom: 80px;
@@ -64,19 +61,15 @@
   font-size: 48px;
   font-weight: 700;
   margin-bottom: 16px;
-  background: linear-gradient(135deg, #00ff88 0%, #00d9ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--brand);
 }
 
 .page-subtitle {
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
   margin: 0;
 }
 
-/* Instruments Grid */
 .instruments-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -84,15 +77,14 @@
   margin-top: 60px;
 }
 
-/* Instrument Card */
 .instrument-card {
   position: relative;
   height: 380px;
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-  transform: translateZ(0);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  border: 1px solid var(--border-color);
 }
 
 .instrument-card::before {
@@ -102,18 +94,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--card-color, #FF6B35);
-  opacity: 0.9;
+  background: var(--card-color, var(--brand));
+  opacity: 0.85;
   z-index: 1;
 }
 
 .instrument-card:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  transform: translateY(-8px);
+  box-shadow: var(--card-shadow);
 }
 
-/* Card Front */
-.card-front {
+.card-front,
+.card-back {
   position: absolute;
   top: 0;
   left: 0;
@@ -125,61 +117,15 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  opacity: 1;
-  transition: opacity 0.4s ease;
   padding: 40px;
   text-align: center;
-}
-
-.card-icon {
-  font-size: 64px;
-  display: block;
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
-}
-
-.card-title {
-  font-size: 32px;
-  font-weight: 700;
-  margin: 0;
   color: #fff;
-  letter-spacing: -0.5px;
 }
 
-.card-subtitle {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* Card Back */
 .card-back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  padding: 40px;
   opacity: 0;
-  transition: opacity 0.4s ease;
   pointer-events: none;
+  z-index: 3;
 }
 
 .instrument-card:hover .card-front {
@@ -191,11 +137,27 @@
   pointer-events: auto;
 }
 
+.card-icon {
+  font-size: 64px;
+}
+
+.card-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 .card-description {
   font-size: 16px;
   line-height: 1.6;
-  text-align: center;
-  color: #fff;
   margin: 0;
 }
 
@@ -209,116 +171,23 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
 }
 
 .card-button:hover {
   background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.6);
-  transform: translateY(-2px);
-}
-
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .instruments-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-  }
-
-  .container-fluid {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .header-title {
-    font-size: 36px;
-  }
-
-  .page-title {
-    font-size: 36px;
-  }
 }
 
 @media (max-width: 768px) {
-  .learning-header {
-    padding: 24px 0;
-    margin-bottom: 40px;
-  }
-
-  .header-title {
-    font-size: 28px;
-    margin-bottom: 20px;
-  }
-
-  .header-tabs {
-    gap: 20px;
-    padding-bottom: 12px;
-  }
-
-  .tab-link {
-    font-size: 14px;
-  }
-
+  .header-title,
   .page-title {
     font-size: 28px;
-    margin-bottom: 12px;
   }
 
-  .page-subtitle {
-    font-size: 14px;
-  }
-
-  .page-title-section {
-    margin-bottom: 40px;
-  }
-
-  .instruments-grid {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-  }
-
-  .instrument-card {
-    height: 300px;
-  }
-
-  .card-title {
-    font-size: 24px;
-  }
-
-  .card-icon {
-    font-size: 48px;
-  }
-
-  .card-front,
-  .card-back {
-    padding: 30px 20px;
-  }
-
-  .card-description {
-    font-size: 14px;
-  }
-
-  .card-button {
-    font-size: 14px;
-    padding: 10px 20px;
-  }
-}
-
-@media (max-width: 480px) {
   .instruments-grid {
     grid-template-columns: 1fr;
   }
 
-  .header-title {
-    font-size: 24px;
-  }
-
-  .page-title {
-    font-size: 22px;
-  }
-
-  .container-fluid {
-    padding-left: 16px;
-    padding-right: 16px;
+  .instrument-card {
+    height: 300px;
   }
 }

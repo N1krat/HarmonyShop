@@ -4,11 +4,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product.service'; // adjust path
 import { CartService } from '../../core/services/cart.service';
+import { TranslatePipe } from '../../../shared/translate.pipe';
+import { TranslationService } from '../../core/services/translation.service';
 
 @Component({
   selector: 'app-body',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './body.html',
   styleUrls: ['./body.css']
 })
@@ -19,23 +21,21 @@ export class BodyComponent implements OnInit {
   loading = true;
   categories: string[] = [];
   
-  // Filter options
   selectedCategory = '';
   minPrice = 0;
-  maxPrice = 10000;
+  maxPrice = 100000;
   searchQuery = '';
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private translationService: TranslationService
   ) {
-    console.log('🛍️ ProductBodyComponent initialized');
   }
 
   ngOnInit(): void {
-    console.log('🛍️ ProductBodyComponent ngOnInit called');
     
     // Load categories
     this.loadCategories();
@@ -52,20 +52,16 @@ export class BodyComponent implements OnInit {
   }
 
   loadCategories() {
-    console.log('📂 Loading categories...');
     this.productService.getCategories().subscribe({
       next: (data) => {
         this.categories = data;
-        console.log('✅ 📂 Categories loaded:', data);
       },
       error: (err) => {
-        console.error('❌ 📂 Error loading categories:', err);
       }
     });
   }
 
   loadProducts() {
-    console.log('🛍️ Loading products...');
     this.loading = true;
     this.productService.getProducts().subscribe({
       next: (data) => {
@@ -73,11 +69,9 @@ export class BodyComponent implements OnInit {
         this.filteredProducts = data;
         this.loading = false;
 
-        console.log('✅ 🛍️ Products loaded:', data);
       },
 
       error: (err) => {
-        console.error('❌ 🛍️ Error loading products:', err);
         this.loading = false;
       }
     });
@@ -89,24 +83,20 @@ export class BodyComponent implements OnInit {
       return;
     }
 
-    console.log('🔍 Searching products for:', this.searchQuery);
     this.loading = true;
     this.productService.searchProducts(this.searchQuery).subscribe({
       next: (data) => {
         this.products = data;
         this.filteredProducts = data;
         this.loading = false;
-        console.log('✅ 🔍 Search results:', data);
       },
       error: (err) => {
-        console.error('❌ 🔍 Search error:', err);
         this.loading = false;
       }
     });
   }
 
   applyFilters() {
-    console.log('🔍 Applying filters - category:', this.selectedCategory, 'price:', this.minPrice, '-', this.maxPrice);
     this.loading = true;
 
     this.productService.filterProducts(
@@ -117,30 +107,25 @@ export class BodyComponent implements OnInit {
       next: (data) => {
         this.filteredProducts = data;
         this.loading = false;
-        console.log('✅ 🔍 Filtered results:', data);
       },
       error: (err) => {
-        console.error('❌ 🔍 Filter error:', err);
         this.loading = false;
       }
     });
   }
 
   resetFilters() {
-    console.log('🔄 Resetting filters');
     this.selectedCategory = '';
     this.minPrice = 0;
-    this.maxPrice = 10000;
+    this.maxPrice = 100000;
     this.searchQuery = '';
     this.loadProducts();
   }
 
   addToCart(product: any) {
-    console.log('🛒 Add to cart clicked for product:', product);
     
     if (!product || !product.id) {
-      console.error('❌ 🛒 Product is invalid:', product);
-      alert('Invalid product');
+      alert(this.translationService.translate('products.invalidProduct'));
       return;
     }
 
@@ -152,13 +137,11 @@ export class BodyComponent implements OnInit {
       image: product.images?.[0] || product.image
     };
 
-    console.log('🛒 Adding to cart:', cartItem);
     this.cartService.addToCart(cartItem);
-    alert(`${product?.name || 'Product'} added to cart`);
+    alert(this.translationService.translate('products.addedToCart', { name: product?.name || 'Product' }));
   }
 
   openProduct(id: number) {
-    console.log('📦 Opening product detail page for id:', id);
     this.router.navigate(['/product', id]);
   }
 }

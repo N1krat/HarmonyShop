@@ -30,31 +30,18 @@ export class AuthService {
   return this.http.post(this.apiUrl, credentials).pipe(
     tap({
       next: (res: any) => {
-        console.log('✅ LOGIN SUCCESS:', res);
-        console.log('✅ Token:', res.token);
-        console.log('✅ User:', res.user);
-        console.log('✅ User role:', res.user?.role || 'no role provided');
 
         this.saveToken(res.token);
         this.saveEmail(res.user.email);
         this.saveUserId(res.user.id);
         
-        // Only save role if it exists
         if (res.user.role) {
           this.saveUserRole(res.user.role);
-          console.log('✅ Saved role:', res.user.role);
         } else {
-          // Default to 'user' if no role is provided
           this.saveUserRole('user');
-          console.log('✅ No role in response, defaulting to "user"');
         }
       },
       error: (err: any) => {
-        console.error('❌ LOGIN FAILED:', err);
-        console.error('❌ Status:', err.status);
-        console.error('❌ Status text:', err.statusText);
-        console.error('❌ Error message:', err.error);
-        console.error('❌ Full error:', err);
         throw err; 
       }
     })
@@ -85,6 +72,9 @@ export class AuthService {
   }
 
   getUserId(): number | null {
+    if (typeof window === 'undefined') {
+      return null;
+    }
     const id = localStorage.getItem('userId');
     return id ? parseInt(id, 10) : null;
   }
@@ -103,12 +93,13 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
+    if (typeof window === 'undefined') {
+      return false;
+    }
     const role = this.getUserRole();
-    // Check if role is admin OR if email is admin@example.com (for testing)
     const email = localStorage.getItem('email');
     const isAdminRole = role === 'admin';
     const isAdminEmail = email === 'admin@example.com' || email === 'admin';
-    console.log('🔐 Admin check - role:', role, 'email:', email, 'isAdmin:', isAdminRole || isAdminEmail);
     return isAdminRole || isAdminEmail;
   }
   

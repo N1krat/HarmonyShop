@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { TranslatePipe } from './translate.pipe';
 
 @Component({
   selector: 'app-shared-footer',
   standalone: true,
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css'],
-  imports: [CommonModule]
+  imports: [TranslatePipe]
 })
 export class SharedFooterComponent {}

@@ -5,12 +5,14 @@ import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslatePipe } from '../../../shared/translate.pipe';
+import { TranslationService } from '../../core/services/translation.service';
 
 
 @Component({
   selector: 'app-body',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslatePipe],
   templateUrl: './body.html',
   styleUrls: ['./body.css']
 })
@@ -24,7 +26,8 @@ export class BodyComponent implements OnInit {
     private router: Router,
     private cartService: CartService,
     private orderService: OrderService,
-    private authService: AuthService
+    private authService: AuthService,
+    private translationService: TranslationService
   ) {
     console.log('🛒 CartBodyComponent constructor called');
   }
@@ -68,15 +71,13 @@ export class BodyComponent implements OnInit {
   checkout() {
     console.log('🛒 Checkout initiated, items:', this.cartItems);
     if (this.cartItems.length === 0) {
-      console.warn('🛒 Cart is empty, cannot checkout');
-      alert('Cart is empty');
+      alert(this.translationService.translate('cart.emptyAlert'));
       return;
     }
 
     const userId = localStorage.getItem('userId');
     if (!userId) {
-      console.warn('🛒 User not logged in');
-      alert('Please log in to checkout');
+      alert(this.translationService.translate('cart.loginRequired'));
       this.router.navigate(['/login']);
       return;
     }
@@ -94,14 +95,16 @@ export class BodyComponent implements OnInit {
     this.orderService.createOrder(parseInt(userId), this.totalPrice, orderProducts).subscribe({
       next: (response: any) => {
         console.log('✅ 🛒 Order created successfully:', response);
-        alert(`Order placed successfully! Order ID: ${response.orderId}`);
+        alert(this.translationService.translate('cart.orderSuccess', { id: response.orderId }));
         this.cartService.clearCart();
         this.isCheckingOut = false;
         this.router.navigate(['/profile']);
       },
       error: (err) => {
         console.error('❌ 🛒 Error creating order:', err);
-        alert('Error placing order: ' + (err.error?.error || err.message));
+        alert(this.translationService.translate('cart.orderError', {
+          message: err.error?.error || err.message
+        }));
         this.isCheckingOut = false;
       }
     });

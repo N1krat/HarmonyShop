@@ -19,12 +19,10 @@ export class OrderService {
   }
 
   getOrdersByUserId(userId: number) {
-    console.log('📋 Fetching orders for user:', userId);
     return this.http.get(`${this.apiUrl}/${userId}`);
   }
 
   createOrder(userId: number, total: number, products: any[]) {
-    console.log('📝 Creating order for user:', userId, 'total:', total);
     const orderData = {
       user_id: userId,
       total: total,
@@ -34,7 +32,6 @@ export class OrderService {
   }
 
   updateOrderStatus(orderId: number, status: number) {
-    console.log('📝 Updating order status:', orderId, 'status:', status);
     return this.http.put(`${this.apiUrl}/${orderId}`, { status });
   }
 }

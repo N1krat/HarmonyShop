@@ -2,14 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../components/core/services/auth.service'; // adjust path if needed
+import { AuthService } from '../components/core/services/auth.service';
+import { ThemeToggleComponent } from './theme-toggle.component';
+import { LanguageSelectorComponent } from './language-selector.component';
+import { TranslatePipe } from './translate.pipe';
 
 @Component({
   selector: 'app-shared-header',
   standalone: true,
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
-  imports: [RouterLink, CommonModule, FormsModule]
+  imports: [
+    RouterLink,
+    CommonModule,
+    FormsModule,
+    ThemeToggleComponent,
+    LanguageSelectorComponent,
+    TranslatePipe
+  ]
 })
 export class SharedHeaderComponent implements OnInit {
   isLogged = false;
@@ -33,22 +43,11 @@ export class SharedHeaderComponent implements OnInit {
     });
   }
 
-  goLogin() {
-    if (this.isLogged) {
-      // user already logged in
-      this.router.navigate(['/profile']);
-    } else {
-      // user not logged in
-      this.router.navigate(['/login']);
-    }
-  }
-
   logout() {
     this.authService.logout();
   }
 
   search() {
-    console.log('🔍 Searching for:', this.searchQuery);
     if (this.searchQuery.trim()) {
       this.router.navigate(['/products'], {
         queryParams: { search: this.searchQuery }

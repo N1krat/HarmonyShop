@@ -1,30 +1,23 @@
 <div class="product-page" *ngIf="product">
-  <div class="container-fluid px-4 py-5">
-    <!-- Breadcrumb Navigation -->
+  <div class="container-fluid px-4 py-3">
     <nav class="breadcrumb-nav mb-4" aria-label="breadcrumb">
-      <a href="/" class="breadcrumb-link">Home</a>
+      <a routerLink="/home" class="breadcrumb-link">{{ 'productPage.home' | translate }}</a>
       <span class="breadcrumb-separator">/</span>
-      <a href="/products" class="breadcrumb-link">Products</a>
+      <a routerLink="/products" class="breadcrumb-link">{{ 'productPage.products' | translate }}</a>
       <span class="breadcrumb-separator">/</span>
       <span class="breadcrumb-current">{{ product.name }}</span>
     </nav>
 
     <div class="row g-5">
-      <!-- Product Image Section -->
       <div class="col-lg-6">
         <div class="product-image-container">
-          <img 
-            [src]="getImageUrl(product.images?.[0])" 
-            alt="{{ product.name }}"
-            class="product-image"
-          >
-          <!-- Additional Images Carousel (if available) -->
+          <img [src]="getImageUrl(product.images?.[0])" [alt]="product.name" class="product-image">
           <div class="product-images-carousel mt-3" *ngIf="product.images && product.images.length > 1">
             <div class="thumbnail-scroll">
-              <img 
+              <img
                 *ngFor="let img of product.images; let i = index"
                 [src]="getImageUrl(img)"
-                alt="Product image {{ i + 1 }}"
+                [alt]="'Product image ' + (i + 1)"
                 class="thumbnail-img"
                 (click)="selectImage(img)"
                 [class.active]="selectedImage === img"
@@ -34,10 +27,8 @@
         </div>
       </div>
 
-      <!-- Product Details Section -->
       <div class="col-lg-6">
         <div class="product-details">
-          <!-- Rating and Reviews -->
           <div class="rating-section mb-3">
             <span class="stars">
               <span class="star-filled">★</span>
@@ -47,84 +38,55 @@
               <span class="star-filled">★</span>
             </span>
             <span class="rating-value ms-2">{{ product.rating || 5 }}</span>
-            <span class="review-count">(2 review-uri)</span>
+            <span class="review-count">(2 {{ 'productPage.reviews' | translate }})</span>
           </div>
 
-          <!-- Product Title -->
           <h1 class="product-title mb-3">{{ product.name }}</h1>
 
-          <!-- Category and Brand -->
           <div class="category-section mb-4">
             <span class="badge badge-category">{{ product.category }}</span>
           </div>
 
-          <!-- Description -->
           <p class="product-description mb-4">
-            {{ product.description }}
+            <strong>{{ 'productPage.description' | translate }}:</strong> {{ product.description }}
           </p>
 
-          <!-- Price Section -->
           <div class="price-section mb-4">
             <h2 class="price-display">MDL {{ product.price }}</h2>
-            <p class="stock-status" [class.in-stock]="product.stock > 0">
-              <span *ngIf="product.stock > 0" class="stock-badge">Disponibil în stoc</span>
-              <span *ngIf="product.stock <= 0" class="stock-badge out-of-stock">Out of Stock</span>
+            <p class="stock-status">
+              <span *ngIf="product.stock > 0" class="stock-badge">{{ 'productPage.inStock' | translate }}</span>
+              <span *ngIf="product.stock <= 0" class="stock-badge out-of-stock">{{ 'productPage.outOfStock' | translate }}</span>
             </p>
           </div>
 
-          <!-- Quantity Selector and Add to Cart -->
           <div class="purchase-section mb-5">
-            <div class="quantity-selector">
-              <button 
-                class="qty-btn" 
-                (click)="decreaseQuantity()"
-                [disabled]="quantity <= 1"
-              >
-                −
-              </button>
-              <input 
-                type="number" 
-                [(ngModel)]="quantity" 
-                class="qty-input"
-                min="1"
-                [max]="product.stock"
-              >
-              <button 
-                class="qty-btn" 
-                (click)="increaseQuantity()"
-                [disabled]="quantity >= product.stock"
-              >
-                +
-              </button>
+            <label class="form-label fw-semibold mb-2">{{ 'productPage.quantity' | translate }}</label>
+            <div class="quantity-selector mb-3">
+              <button class="qty-btn" (click)="decreaseQuantity()" [disabled]="quantity <= 1">−</button>
+              <input type="number" [(ngModel)]="quantity" class="qty-input" min="1" [max]="product.stock">
+              <button class="qty-btn" (click)="increaseQuantity()" [disabled]="quantity >= product.stock">+</button>
             </div>
 
-            <button 
-              class="btn-add-to-cart"
-              (click)="addToCart(product)"
-              [disabled]="product.stock <= 0"
-            >
-              Adauga în cos
+            <button class="btn-add-to-cart" (click)="addToCart(product)" [disabled]="product.stock <= 0">
+              {{ 'productPage.addToCart' | translate }}
             </button>
 
-            <button class="btn-favorite">
-              ♡ Adauga la Favorite
-            </button>
+            <button class="btn-favorite">♡ {{ 'productPage.addToFavorites' | translate }}</button>
           </div>
 
-          <!-- Additional Info -->
           <div class="additional-info">
             <div class="info-row">
-              <span class="info-label">COD PRODUS - SKU:</span>
+              <span class="info-label">{{ 'productPage.sku' | translate }}:</span>
               <span class="info-value">BOS-BL-RSOB</span>
             </div>
             <div class="info-row">
-              <span class="info-label">CATEGORIE:</span>
+              <span class="info-label">{{ 'productPage.category' | translate }}:</span>
               <span class="info-value">{{ product.category }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">DISPONIBILITATE:</span>
-              <span class="info-value" *ngIf="product.stock > 0">{{ product.stock }} în stoc</span>
-              <span class="info-value" *ngIf="product.stock <= 0">Out of Stock</span>
+              <span class="info-label">{{ 'productPage.availability' | translate }}:</span>
+              <span class="info-value" *ngIf="product.stock > 0">{{ product.stock }} {{ 'productPage.inStockCount' | translate }}</span>
+              <span class="info-value" *ngIf="product.stock <= 0">{{ 'productPage.outOfStock' | translate }}</span>
             </div>
           </div>
         </div>
@@ -136,7 +98,7 @@
 <div *ngIf="!product" class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-6 text-center">
-      <h3>Product not found.</h3>
+      <h3>{{ 'productPage.notFound' | translate }}</h3>
     </div>
   </div>
 </div>

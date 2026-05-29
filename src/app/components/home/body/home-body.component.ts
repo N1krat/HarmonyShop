@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ProductService } from '../../core/services/product.service';
+import { SHARED_UI_IMPORTS } from '../../../shared/shared-ui.imports';
 
 @Component({
-  selector: 'app-body',
+  selector: 'app-home-body',
   standalone: true,
-  imports: [CommonModule],
+  imports: [...SHARED_UI_IMPORTS],
   templateUrl: './body.html',
   styleUrls: ['./body.css']
 })
-export class BodyComponent implements OnInit {
+export class HomeBodyComponent implements OnInit {
   products: any[] = [
     { name: 'Product 1', price: 199, image: '../../../../backend/uploads/promo/promo1.webp' },
     { name: 'Product 2', price: 299, image: '../../../../backend/uploads/promo/promo2.webp' },

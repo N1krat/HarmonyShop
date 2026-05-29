@@ -1,43 +1,26 @@
 <div class="learning-page">
-  <!-- Header -->
-  <div class="learning-header">
-    <div class="container-fluid">
-      <h1 class="header-title">My Learning</h1>
-      <div class="header-tabs">
-        <a href="#" class="tab-link active">🎓 Current</a>
-        <a href="#" class="tab-link">🕐 Recent</a>
-        <a href="#" class="tab-link">📌 Saved</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- Main Content -->
+
   <div class="learning-container">
     <div class="container-fluid">
-      <!-- Page Title -->
       <div class="page-title-section mb-5">
-        <h2 class="page-title">Choose an Instrument to Learn</h2>
-        <p class="page-subtitle">Master popular musical instruments with our comprehensive video courses</p>
+        <h2 class="page-title">{{ 'learning.chooseInstrument' | translate }}</h2>
+        <p class="page-subtitle">{{ 'learning.subtitle' | translate }}</p>
       </div>
 
-      <!-- Instruments Grid -->
       <div class="instruments-grid">
-        <div *ngFor="let instrument of instruments" 
-             class="instrument-card" 
+        <div *ngFor="let instrument of instruments"
+             class="instrument-card"
              [style.--card-color]="instrument.color"
              (click)="selectInstrument(instrument)">
-          
-          <!-- Card Front -->
           <div class="card-front">
             <div class="card-icon">{{ instrument.icon }}</div>
-            <h3 class="card-title">{{ instrument.name }}</h3>
-            <p class="card-subtitle">{{ instrument.modules }} modules</p>
+            <h3 class="card-title">{{ instrument.nameKey | translate }}</h3>
+            <p class="card-subtitle">{{ instrument.modules }} {{ 'learning.modules' | translate }}</p>
           </div>
-
-          <!-- Card Back/Hover Content -->
           <div class="card-back">
-            <p class="card-description">{{ instrument.description }}</p>
-            <button class="card-button">Start Learning →</button>
+            <p class="card-description">{{ instrument.descriptionKey | translate }}</p>
+            <button class="card-button">{{ 'learning.startLearning' | translate }} →</button>
           </div>
         </div>
       </div>

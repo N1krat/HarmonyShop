@@ -1,0 +1,203 @@
+{
+  "nav": {
+    "brand": "HarmonyShop",
+    "searchPlaceholder": "Search products...",
+    "products": "Products",
+    "learn": "Learn",
+    "profile": "Profile",
+    "cart": "Cart",
+    "admin": "Admin Panel",
+    "logout": "Logout",
+    "login": "Login"
+  },
+  "footer": {
+    "copyright": "© 2026 HarmonyShop. All rights reserved."
+  },
+  "common": {
+    "na": "N/A"
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "loginSubtitle": "Enter your data to connect",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Login",
+    "noAccount": "Don't have an account?",
+    "registerLink": "Register",
+    "registerTitle": "Register",
+    "registerButton": "Register",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Login",
+    "errors": {
+      "required": "Email and password are required",
+      "invalidCredentials": "Invalid credentials",
+      "registrationFailed": "Registration failed. Please try again."
+    },
+    "success": {
+      "registered": "Registration successful! Redirecting to login..."
+    }
+  },
+  "home": {
+    "topProducts": "Our Top Products",
+    "addToCart": "Add to Cart"
+  },
+  "products": {
+    "filters": "Filters",
+    "category": "Category",
+    "allCategories": "All Categories",
+    "priceRange": "Price Range",
+    "min": "Min",
+    "max": "Max",
+    "title": "Products",
+    "resetFilters": "Reset Filters",
+    "searchingFor": "Searching for",
+    "showing": "Showing",
+    "productsCount": "products",
+    "noProductsFiltered": "No products found. Try adjusting your filters.",
+    "rating": "Rating",
+    "addToCart": "Add to Cart",
+    "invalidProduct": "Invalid product",
+    "addedToCart": "{{name}} added to cart"
+  },
+  "productPage": {
+    "home": "Home",
+    "products": "Products",
+    "reviews": "reviews",
+    "description": "Description",
+    "quantity": "Quantity",
+    "addToCart": "Add to Cart",
+    "addToFavorites": "Add to Favorites",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "category": "Category",
+    "notFound": "Product not found.",
+    "sku": "Product SKU",
+    "availability": "Availability",
+    "inStockCount": "in stock",
+    "invalidProduct": "Invalid product",
+    "addedToCart": "{{name}} x{{qty}} added to cart"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty.",
+    "goToShop": "Go to Shop",
+    "remove": "Remove",
+    "total": "Total",
+    "checkout": "Checkout",
+    "processing": "Processing...",
+    "emptyAlert": "Cart is empty",
+    "loginRequired": "Please log in to checkout",
+    "orderSuccess": "Order placed successfully! Order ID: {{id}}",
+    "orderError": "Error placing order: {{message}}"
+  },
+  "profile": {
+    "welcome": "Welcome to your profile",
+    "emailLabel": "Email:",
+    "ordersTitle": "Your Orders",
+    "noOrders": "You have no orders yet.",
+    "goToShop": "Go to Shop",
+    "order": "Order",
+    "userId": "User ID",
+    "total": "Total",
+    "items": "Items",
+    "qty": "Qty",
+    "noItems": "No items in this order",
+    "pending": "Pending",
+    "completed": "Completed",
+    "canceled": "Canceled"
+  },
+  "learning": {
+    "title": "My Learning",
+    "tabCurrent": "Current",
+    "tabRecent": "Recent",
+    "tabSaved": "Saved",
+    "chooseInstrument": "Choose an Instrument to Learn",
+    "subtitle": "Master popular musical instruments with our comprehensive video courses",
+    "modules": "modules",
+    "startLearning": "Start Learning",
+    "instruments": {
+      "guitar": { "name": "Guitar", "desc": "Learn to play acoustic and electric guitar" },
+      "piano": { "name": "Piano", "desc": "Master keyboard and piano techniques" },
+      "violin": { "name": "Violin", "desc": "Classical strings and advanced techniques" },
+      "drums": { "name": "Drums", "desc": "Rhythm, beats, and percussion mastery" },
+      "saxophone": { "name": "Saxophone", "desc": "Jazz and classical saxophone lessons" },
+      "flute": { "name": "Flute", "desc": "Wind instruments and breath control" },
+      "unknown": { "name": "Instrument", "desc": "Music lessons" }
+    }
+  },
+  "lessons": {
+    "back": "Back",
+    "lessons": "Lessons",
+    "courseContent": "Course Content",
+    "lessonDescription": "Learn this lesson step by step. Make sure to practice what you've learned before moving to the next module.",
+    "markComplete": "Mark as Complete & Continue",
+    "lessonsCount": "Lessons",
+    "noLessons": "No lessons available for this instrument yet.",
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "guitar": {
+      "l1": "Basics & Guitar Parts",
+      "l2": "Holding the Guitar",
+      "l3": "Basic Chords",
+      "l4": "Strumming Patterns",
+      "l5": "Fingerpicking",
+      "l6": "Barre Chords",
+      "l7": "Lead Guitar Basics",
+      "l8": "Complete Song"
+    },
+    "piano": {
+      "l1": "Piano Keys & Layout",
+      "l2": "Hand Position",
+      "l3": "Reading Music Notes",
+      "l4": "Basic Major Scales",
+      "l5": "Chord Construction",
+      "l6": "Playing Melodies",
+      "l7": "Jazz Improvisation",
+      "l8": "Classical Piece",
+      "l9": "Advanced Techniques",
+      "l10": "Performance Prep"
+    },
+    "violin": {
+      "l1": "Violin Parts Overview",
+      "l2": "Holding the Bow",
+      "l3": "Proper Posture",
+      "l4": "First Notes",
+      "l5": "Vibrato Technique",
+      "l6": "Shifting Positions",
+      "l7": "Classical Repertoire"
+    },
+    "drums": {
+      "l1": "Drum Kit Setup",
+      "l2": "Grip & Technique",
+      "l3": "Basic Beats",
+      "l4": "Coordination Drills",
+      "l5": "Drum Fills",
+      "l6": "Advanced Patterns"
+    },
+    "saxophone": {
+      "l1": "Saxophone Basics",
+      "l2": "Reed & Mouthpiece",
+      "l3": "First Sounds",
+      "l4": "Fingering Chart",
+      "l5": "Tone Development",
+      "l6": "Jazz Scales",
+      "l7": "Blues Improvisation",
+      "l8": "Advanced Techniques"
+    },
+    "flute": {
+      "l1": "Flute Assembly",
+      "l2": "Embouchure",
+      "l3": "First Notes",
+      "l4": "Breathing Techniques",
+      "l5": "Scales & Arpeggios",
+      "l6": "Classical Pieces"
+    }
+  },
+  "theme": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  }
+}

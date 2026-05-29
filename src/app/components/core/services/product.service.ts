@@ -20,12 +20,10 @@ export class ProductService {
   }
 
   searchProducts(query: string): Observable<any[]> {
-    console.log('🔍 Searching products:', query);
     return this.http.get<any[]>(`http://localhost:3000/api/products/search?q=${encodeURIComponent(query)}`);
   }
 
   filterProducts(category?: string, minPrice?: number, maxPrice?: number): Observable<any[]> {
-    console.log('🔍 Filtering products - category:', category, 'minPrice:', minPrice, 'maxPrice:', maxPrice);
     let url = 'http://localhost:3000/api/products/filter?';
     const params = [];
 
@@ -43,7 +41,6 @@ export class ProductService {
   }
 
   getCategories(): Observable<string[]> {
-    console.log('📂 Fetching categories');
     return this.http.get<string[]>('http://localhost:3000/api/categories');
   }
 }

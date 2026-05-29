@@ -1,140 +1,34 @@
-body {
-    margin: 0; 
-    padding: 0; 
-    width : 100%;  
-    height: 100vh; 
-    background-color:rgb(129, 129, 129); 
+:host {
+  display: block;
 }
 
-.h1 { 
-    color: white; 
-  text-align: center;
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.p { 
-    text-align: center;
-    color: white; 
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow);
 }
-
-.header {
-  width: 100%;
-    height: 10vh; 
-    background-color: white; 
-    margin-bottom: 30px;
-}
-
-
-.nav { 
-  width: 100%;
-    height: 5vh; 
-    background-color: white;
-  display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 15px;
-}
-
-.navTitle { 
-    margin-left: 2vw;
-    margin-right: 2vw;
-}
-
-#navBtn { 
-    margin-left: 2vw;
-    margin-right: 2vw;
-    background-color: rgb(129, 129, 129);
-  border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-  text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-#navBtn:hover { 
-    background-color: rgb(161, 161, 161);
-}
-
-#navBtn:visited { 
-    background-color: rgb(155, 182, 255);
-}
-
-.content { 
-    text-align: center; 
-}
-
-.newsImg { 
-    margin-left: 2vw;
-    margin-right: 2vw;  
-    box-shadow: 10px 10px 60px 10px black;
-    max-width: 100%;
-    
-    border-radius: 25px;
-}
-
-.product { 
-    width: 200px; /* smaller width */
-    background-color: white;
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center;
-    align-items: center;
-    box-shadow: 10px 10px 20px 10px rgba(0,0,0,0.2); /* slightly smaller shadow */
-    padding-bottom: 0.5vh; /* less padding */
-    border-radius: 10px;
-} 
 
 .product-card img.card-img-top {
-    width: 150px;       /* smaller width */
-    height: 150px;      /* fixed height */
-    object-fit: cover;  /* crops the image nicely */
-    margin: 0 auto;     /* center the image */
-    border-radius: 10px; /* optional: match card rounding */
+  height: 200px;
+  object-fit: cover;
 }
-
-
-.product:hover {
-    transform: translateY(-15px); /* smaller hover lift */
-    box-shadow: 0 0.3rem 0.8rem rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
-}
-
-.products {
-    width: 100%; 
-    background-color: rgb(129, 129, 129);
-    margin-top: 5vh;
-    margin-bottom: 5vh;
-    display: flex; 
-    flex-direction: row;
-    flex-wrap: wrap; 
-    justify-content: center;
-    align-items: flex-start;
-    gap: 20px; /* smaller gap */
-    padding: 15px; /* less padding */
-}
-
-
-
-.YTsiGoogle { 
-    margin: 5vh auto; 
-    max-width: 800px; 
-    background-color: rgb(209, 209, 209);
-    box-shadow: 10px 10px 30px 20px rgba(0,0,0,0.2);
-    padding: 20px;
-    border-radius: 10px;
-}
-
-
-
 
 #promoCarousel .carousel-item {
   height: 480px;
-  background: #000;
+  background: var(--bg-elevated);
 }
 
 #promoCarousel .carousel-item img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  #promoCarousel .carousel-item {
+    height: 280px;
+  }
 }

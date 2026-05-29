@@ -1,44 +1,57 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Product } from '../../core/models/product.model';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { SHARED_UI_IMPORTS } from '../../../shared/shared-ui.imports';
+import { TranslationService } from '../../core/services/translation.service';
+import { LanguageService } from '../../core/services/language.service';
 import { AdminService } from '../../core/services/admin.service';
 import { CartService } from '../../core/services/cart.service';
 
 @Component({
-  selector: 'app-body',
+  selector: 'app-product-detail-body',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule, RouterModule, ...SHARED_UI_IMPORTS],
   templateUrl: './body.html',
   styleUrls: ['./body.css']
 })
-export class BodyComponent implements OnInit {
+export class ProductDetailBodyComponent implements OnInit, OnDestroy {
   product?: any;
-  quantity: number = 1;
-  selectedImage: string = '';
+  quantity = 1;
+  selectedImage = '';
+  private langSub?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private adminService: AdminService,
-    private cartService: CartService
+    private cartService: CartService,
+    private translationService: TranslationService,
+    private languageService: LanguageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!id) return;
+    this.langSub = this.languageService.language$.subscribe(() => {
+      this.cdr.markForCheck();
+    });
 
-    this.loadProduct(id);
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    if (id) {
+      this.loadProduct(id);
+    }
   }
 
-  loadProduct(id: number) {
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
+  }
+
+  loadProduct(id: number): void {
     this.adminService.getProductById(id).subscribe({
       next: (data) => {
         this.product = data;
         this.selectedImage = data.images?.[0] || '';
         this.quantity = 1;
-        console.log('Product loaded:', data);
       },
       error: (err) => {
         console.error('Error loading product:', err);
@@ -46,47 +59,44 @@ export class BodyComponent implements OnInit {
     });
   }
 
-  selectImage(img: string) {
+  selectImage(img: string): void {
     this.selectedImage = img;
   }
 
-  increaseQuantity() {
+  increaseQuantity(): void {
     if (this.product && this.quantity < this.product.stock) {
       this.quantity++;
     }
   }
 
-  decreaseQuantity() {
+  decreaseQuantity(): void {
     if (this.quantity > 1) {
       this.quantity--;
     }
   }
 
-  // Helper to get full URL for backend images
   getImageUrl(imgPath?: string): string {
     return imgPath ? `http://localhost:3000${imgPath}` : 'assets/no-image.png';
   }
 
-  addToCart(product: any) {
-    console.log('🛒 Add to cart clicked for product:', product);
-    
-    if (!product || !product.id) {
-      console.error('❌ 🛒 Product is invalid:', product);
-      alert('Invalid product');
+  addToCart(product: any): void {
+    if (!product?.id) {
+      alert(this.translationService.translate('productPage.invalidProduct'));
       return;
     }
 
-    const cartItem = {
+    this.cartService.addToCart({
       id: product.id,
       name: product.name || 'Unknown',
       price: product.price || 0,
       quantity: this.quantity,
       image: product.images?.[0] || product.image || ''
-    };
+    });
 
-    console.log('🛒 Adding to cart:', cartItem);
-    this.cartService.addToCart(cartItem);
-    alert(`${product?.name || 'Product'} x${this.quantity} added to cart`);
-    this.quantity = 1; // Reset quantity after adding to cart
+    alert(this.translationService.translate('productPage.addedToCart', {
+      name: product.name || 'Product',
+      qty: this.quantity
+    }));
+    this.quantity = 1;
   }
 }

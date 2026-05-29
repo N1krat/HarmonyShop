@@ -5,16 +5,14 @@ import { LearningBodyComponent } from '../body/body.component';
 
 @Component({
   selector: 'app-learning-connector',
-  standalone: true,
   template: `
     <app-shared-header></app-shared-header>
-    <app-learning-body></app-learning-body>
+    <div class="page-shell">
+      <app-learning-body></app-learning-body>
+    </div>
     <app-shared-footer></app-shared-footer>
   `,
-  imports: [
-    SharedHeaderComponent,
-    LearningBodyComponent,
-    SharedFooterComponent
-  ]
+  standalone: true,
+  imports: [SharedHeaderComponent, LearningBodyComponent, SharedFooterComponent]
 })
 export class LearningConnectorComponent {}
