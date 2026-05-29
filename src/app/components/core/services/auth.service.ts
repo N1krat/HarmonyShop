@@ -26,8 +26,6 @@ export class AuthService {
 
 
   login(credentials: { email: string; password: string }) {
-  console.log('🔐 LOGIN REQUEST:', credentials);
-  console.log('🔐 Request headers will include Content-Type: application/json');
 
   return this.http.post(this.apiUrl, credentials).pipe(
     tap({
@@ -62,8 +60,6 @@ export class AuthService {
     })
   );
 }
-
-
   register(user: { email: string; password: string }): Observable<any> {
     console.log(' REGISTRATION REQUEST:', user);
 
@@ -81,7 +77,6 @@ export class AuthService {
         })
       );
   }
-
 
   saveUserId(id: number) {
     if (typeof window !== 'undefined') {
@@ -116,8 +111,7 @@ export class AuthService {
     console.log('🔐 Admin check - role:', role, 'email:', email, 'isAdmin:', isAdminRole || isAdminEmail);
     return isAdminRole || isAdminEmail;
   }
-
-
+  
   saveToken(token: string) {
     if (typeof window !== 'undefined' && token) {
       localStorage.setItem('token', token);

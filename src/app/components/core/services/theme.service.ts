@@ -13,12 +13,22 @@ export class ThemeService {
   }
 
   private getStoredTheme(): boolean {
-    const stored = localStorage.getItem('darkMode');
-    if (stored !== null) {
-      return stored === 'true';
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem('darkMode');
+        if (stored !== null) {
+          return stored === 'true';
+        }
+      }
+      // Default to dark mode (true = dark, false = light)
+      // Only check system preference if no localStorage entry
+      if (typeof window !== 'undefined' && window.matchMedia) {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+    } catch (e) {
+      // Accessing localStorage or window may throw in some environments (SSR, strict CSP). Fall back to dark.
     }
-    // Default to dark mode if system prefers dark
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return true; // Default to dark theme
   }
 
   toggleTheme(): void {
@@ -39,15 +49,20 @@ export class ThemeService {
   }
 
   private applyTheme(isDark: boolean): void {
-    const html = document.documentElement;
-    if (isDark) {
-      html.setAttribute('data-theme', 'dark');
-      document.body.classList.add('dark-theme');
-      document.body.classList.remove('light-theme');
-    } else {
-      html.setAttribute('data-theme', 'light');
-      document.body.classList.add('light-theme');
-      document.body.classList.remove('dark-theme');
+    try {
+      const html = (typeof document !== 'undefined' && document.documentElement) ? document.documentElement : null;
+      const body = (typeof document !== 'undefined' && document.body) ? document.body : null;
+      if (html) {
+        html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        html.classList.toggle('dark-theme', isDark);
+        html.classList.toggle('light-theme', !isDark);
+      }
+      if (body) {
+        body.classList.toggle('dark-theme', isDark);
+        body.classList.toggle('light-theme', !isDark);
+      }
+    } catch (e) {
+      // In environments without DOM (SSR), ignore.
     }
   }
 }

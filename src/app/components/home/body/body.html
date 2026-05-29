@@ -1,18 +1,16 @@
 <div class="container my-5">
 
   <div class="mb-5">
-    <h1 class="mb-3 text-center">Offers</h1>
-
     <div id="promoCarousel" class="carousel slide shadow-lg" data-bs-ride="carousel">
       <div class="carousel-inner">
-        <div 
-          class="carousel-item" 
-          *ngFor="let img of offerImages; let i = index" 
+        <div
+          class="carousel-item"
+          *ngFor="let img of offerImages; let i = index"
           [class.active]="i === 0"
         >
-          <img 
-            [src]="'http://localhost:3000' + img" 
-            class="d-block w-100" 
+          <img
+            [src]="'http://localhost:3000' + img"
+            class="d-block w-100"
             style="max-height:480px; object-fit:cover;"
           >
         </div>
@@ -26,11 +24,11 @@
       </button>
 
       <div class="carousel-indicators">
-        <button 
+        <button
           *ngFor="let img of offerImages; let i = index"
-          type="button" 
-          data-bs-target="#promoCarousel" 
-          [attr.data-bs-slide-to]="i" 
+          type="button"
+          data-bs-target="#promoCarousel"
+          [attr.data-bs-slide-to]="i"
           [class.active]="i === 0">
         </button>
       </div>
@@ -39,14 +37,19 @@
 
   <h2 class="mb-4 text-center">Our Top Products</h2>
 
-  
   <div class="row g-4">
     <div class="col-sm-6 col-md-4" *ngFor="let product of products | slice:0:3">
-      <div class="card h-100 shadow-lg border-0 product-card" style="transition: transform 0.2s;">
-        <img 
-          [src]="'http://localhost:3000' + (product.image || '/default-product.png')" 
-          class="card-img-top" 
-          alt="{{ product.name }}">
+      <div class="card h-100 shadow-lg border-0 product-card">
+        <img
+        *ngIf="product.images?.length"
+        [src]="'http://localhost:3000' + product.images[0]"
+        class="card-img-top"
+        alt="{{ product.name }}"
+        style="max-height:220px; object-fit:cover;"
+      >
+      <div *ngIf="!product.images?.length" class="d-flex align-items-center justify-content-center bg-light" style="height:220px;">
+        <span class="text-muted">No image</span>
+      </div>
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">{{ product.name }}</h5>
           <p class="card-text text-primary fw-bold mb-3">MDL {{ product.price }}</p>
@@ -58,10 +61,12 @@
     </div>
   </div>
 
-
 </div>
 
 <style>
+  .product-card {
+    transition: transform 0.2s;
+  }
   .product-card:hover {
     transform: translateY(-5px);
   }
